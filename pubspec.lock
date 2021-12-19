@@ -315,10 +315,10 @@ packages:
   mustang_codegen:
     dependency: "direct dev"
     description:
-      path: "c:\\wrench\\repos\\open_mustang\\mustang_codegen"
-      relative: false
-    source: path
-    version: "1.0.7"
+      name: mustang_codegen
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.0.8"
   mustang_core:
     dependency: "direct main"
     description:
@@ -410,6 +410,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.5.0"
+  pretty_json:
+    dependency: "direct main"
+    description:
+      name: pretty_json
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.0.0"
   process:
     dependency: transitive
     description:

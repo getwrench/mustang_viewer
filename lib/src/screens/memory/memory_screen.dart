@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:mustang_core/mustang_widgets.dart';
 import 'package:mustang_viewer/src/shared_widgets/app_progress_indicator.dart';
+import 'package:mustang_viewer/src/shared_widgets/current_state.dart';
+import 'package:mustang_viewer/src/shared_widgets/data_view.dart';
+import 'package:mustang_viewer/src/shared_widgets/timeline.dart';
 import 'package:mustang_viewer/src/utils/app_constants.dart';
 
 import 'memory_service.dart';
@@ -40,19 +43,53 @@ class MemoryScreen extends StatelessWidget {
   }
 
   Widget _body(MemoryState? state, BuildContext context) {
-    List<String> items = state!.memory.targetAppState.keys.toList();
     return Scaffold(
       appBar: AppBar(
         title: const Text(AppConstants.memory),
       ),
-      body: ListView.builder(
-        itemCount: items.length,
-        itemBuilder: (BuildContext context, int index) {
-          return ListTile(
-            title: Text(items[index]),
-            subtitle: Text('${state.memory.targetAppState[items[index]]}'),
-          );
-        },
+      body: Center(
+        child: Column(
+          children: [
+            Expanded(
+              child: DecoratedBox(
+                decoration: BoxDecoration(
+                  border: Border.all(
+                    color: Theme.of(context).colorScheme.secondary,
+                  ),
+                ),
+                child: CurrentState(
+                  state!.memory.targetAppState.toMap(),
+                  (modelName) =>
+                      MemoryService().showEventDataByModelName(modelName),
+                ),
+              ),
+            ),
+            Expanded(
+              child: DecoratedBox(
+                decoration: BoxDecoration(
+                  border: Border.all(
+                    color: Theme.of(context).colorScheme.secondary,
+                  ),
+                ),
+                child: Timeline(
+                  state.memory.targetAppEvents.toList(),
+                  (eventIndex) =>
+                      MemoryService().showEventDataByEventIndex(eventIndex),
+                ),
+              ),
+            ),
+            Expanded(
+              child: DecoratedBox(
+                decoration: BoxDecoration(
+                  border: Border.all(
+                    color: Theme.of(context).colorScheme.secondary,
+                  ),
+                ),
+                child: DataView(state.memory.eventData),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

@@ -16,4 +16,10 @@ class $Memory {
 
   @InitField({})
   late BuiltMap<String, String> targetAppState;
+
+  @InitField([])
+  late BuiltList<BuiltMap<String, String>> targetAppEvents;
+
+  @InitField('{}')
+  late String eventData;
 }

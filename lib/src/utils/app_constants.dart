@@ -8,4 +8,7 @@ class AppConstants {
   static const String mustangViewer = 'Mustang Viewer';
   static const String pleaseWait = 'Please wait...';
   static const String unknownError = 'Unknown error';
+  static const String timeline = 'Timeline';
+  static const String liveAppState = 'Live App State';
+  static const String dataView = 'Data';
 }
