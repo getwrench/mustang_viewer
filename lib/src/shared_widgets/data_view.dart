@@ -24,14 +24,18 @@ class DataView extends StatelessWidget {
             style: Theme.of(context).textTheme.headline6,
           ),
         ),
-        Padding(
-          padding: const EdgeInsets.all(AppStyles.padding8),
-          child: Row(
-            children: [
-              Flexible(
-                child: Text(prettyJson(jsonDecode(text))),
+        Expanded(
+          child: Scrollbar(
+            child: Padding(
+              padding: const EdgeInsets.all(AppStyles.padding8),
+              child: Row(
+                children: [
+                  Flexible(
+                    child: Text(prettyJson(jsonDecode(text))),
+                  ),
+                ],
               ),
-            ],
+            ),
           ),
         )
       ],

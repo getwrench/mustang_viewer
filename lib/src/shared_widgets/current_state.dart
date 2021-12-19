@@ -31,12 +31,14 @@ class CurrentState extends StatelessWidget {
           child: Scrollbar(
             child: ListView.separated(
               shrinkWrap: true,
+              reverse: true,
               itemCount: items.length,
               itemBuilder: (BuildContext context, int index) {
                 final String modelName = data.keys.first;
                 EventView eventView =
                     EventView.fromJson(jsonDecode(data.values.first));
                 return ListTile(
+                  dense: true,
                   onTap: () => onTap(modelName),
                   title: Text(modelName),
                   subtitle: Text(

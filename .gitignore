@@ -47,7 +47,7 @@ app.*.map.json
 
 **/src/models/*.model.dart
 **/src/models/*.g.dart
-**/src/models/serializers.dart;
+**/src/models/serializers.dart
 
 **/src/screens/**/*.state.dart
 **/src/screens/**/*.service.dart
