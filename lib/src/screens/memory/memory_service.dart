@@ -1,3 +1,4 @@
+import 'package:built_collection/built_collection.dart';
 import 'package:mustang_core/mustang_core.dart';
 import 'package:mustang_viewer/src/models/connect.model.dart';
 import 'package:mustang_viewer/src/models/memory.model.dart';
@@ -40,7 +41,18 @@ class MemoryService {
       await connect.vmService!.streamListen(EventKind.kExtension);
       await for (Event event in eventStream) {
         if (event.extensionKind == AppConstants.eventExtension) {
-          print(event.extensionData);
+          Map<String, dynamic> eventData = event.toJson();
+          String eventKey = eventData['extensionData']['modelName'];
+          String eventVal = eventData['extensionData']['modelStr'];
+          if (eventKey.isNotEmpty) {
+            Map<String, String> targetEventData = {
+              eventKey: eventVal,
+            };
+            memory = memory.rebuild(
+              (b) => b..targetAppState = MapBuilder(targetEventData),
+            );
+            updateState1(memory);
+          }
         }
       }
     } catch (e) {

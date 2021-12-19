@@ -35,13 +35,17 @@ class ConnectService {
     Connect connect = WrenchStore.get<Connect>() ?? Connect();
 
     if (wsUri.isEmpty) {
-      connect = connect.rebuild((b) => b
-        ..wsUri = wsUri
-        ..readToSubmit = false);
+      connect = connect.rebuild(
+        (b) => b
+          ..wsUri = wsUri
+          ..readToSubmit = false,
+      );
     } else {
-      connect = connect.rebuild((b) => b
-        ..wsUri = wsUri
-        ..readToSubmit = true);
+      connect = connect.rebuild(
+        (b) => b
+          ..wsUri = wsUri
+          ..readToSubmit = true,
+      );
     }
     updateState1(connect);
   }

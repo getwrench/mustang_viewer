@@ -15,6 +15,7 @@ class AppProgressDialog extends StatelessWidget {
       child: ConstrainedBox(
         constraints: const BoxConstraints(
           minHeight: AppStyles.height150,
+          maxWidth: AppStyles.width300,
         ),
         child: const AppProgressIndicator(),
       ),

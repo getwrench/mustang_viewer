@@ -23,14 +23,14 @@ class MemoryScreen extends StatelessWidget {
             (_) => MemoryService().memoizedSubscribe(),
           );
 
-          if (state?.memory.busy ?? false) {
+          if (state!.memory.busy) {
             const Scaffold(
               body: AppProgressIndicator(),
             );
           }
 
-          if (state?.memory.errorMsg.isNotEmpty ?? false) {
-            Text(state?.memory.errorMsg ?? AppConstants.unknownError);
+          if (state.memory.errorMsg.isNotEmpty) {
+            Text(state.memory.errorMsg);
           }
 
           return _body(state, context);
@@ -40,11 +40,20 @@ class MemoryScreen extends StatelessWidget {
   }
 
   Widget _body(MemoryState? state, BuildContext context) {
+    List<String> items = state!.memory.targetAppState.keys.toList();
     return Scaffold(
       appBar: AppBar(
         title: const Text(AppConstants.memory),
       ),
-      body: const Text('asd'),
+      body: ListView.builder(
+        itemCount: items.length,
+        itemBuilder: (BuildContext context, int index) {
+          return ListTile(
+            title: Text(items[index]),
+            subtitle: Text('${state.memory.targetAppState[items[index]]}'),
+          );
+        },
+      ),
     );
   }
 }

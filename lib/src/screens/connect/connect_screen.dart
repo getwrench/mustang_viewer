@@ -53,6 +53,7 @@ class ConnectScreen extends StatelessWidget {
                   decoration: const InputDecoration(
                     hintText: AppConstants.hintServiceUrl,
                     labelText: AppConstants.debugServiceUrl,
+                    floatingLabelBehavior: FloatingLabelBehavior.always,
                   ),
                   maxLines: 1,
                   onChanged: (text) => ConnectService().updateWsUri(text),
