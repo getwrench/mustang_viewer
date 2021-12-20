@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:mustang_viewer/src/shared_widgets/event_text.dart';
 import 'package:mustang_viewer/src/utils/app_constants.dart';
 import 'package:mustang_viewer/src/utils/app_styles.dart';
 import 'package:mustang_viewer/src/utils/event_view.dart';
@@ -54,11 +55,12 @@ class Timeline extends StatelessWidget {
                     EventView.fromJson(jsonDecode(data[index]));
                 return ListTile(
                   dense: true,
-                  selected: index == selectedEventIndex,
                   onTap: () => onTap(index),
-                  title: Text(eventView.label),
-                  subtitle: Text(
-                    '${DateTime.fromMillisecondsSinceEpoch(eventView.timestamp)}',
+                  title: EventText(
+                    rowNum: index,
+                    ts: '${DateTime.fromMillisecondsSinceEpoch(eventView.timestamp)}',
+                    modelName: eventView.label,
+                    selected: index == selectedEventIndex,
                   ),
                 );
               },

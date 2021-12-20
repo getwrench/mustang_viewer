@@ -63,7 +63,9 @@ class MemoryService {
         }
       }
     } catch (e) {
-      memory = memory.rebuild((b) => b..errorMsg = '$e');
+      memory = memory.rebuild(
+        (b) => b..errorMsg = '$e',
+      );
       updateState1(memory);
     }
   }

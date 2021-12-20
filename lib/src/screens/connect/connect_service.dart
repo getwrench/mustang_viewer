@@ -27,7 +27,7 @@ class ConnectService {
           ..vmService = vmService
           ..connected = true,
       );
-    } catch (e, st) {
+    } catch (e) {
       connect = connect.rebuild(
         (b) => b
           ..vmService = null
@@ -48,10 +48,10 @@ class ConnectService {
   }
 
   void clearMemoryScreen() {
-    Memory memory = WrenchStore.get<Memory>() ?? Memory();
+    Memory memory = Memory();
     memory = memory.rebuild(
       (b) => b..clearScreenCache = true,
     );
-    updateState1(Memory(), reload: false);
+    updateState1(memory, reload: false);
   }
 }

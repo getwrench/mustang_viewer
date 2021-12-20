@@ -7,6 +7,7 @@ import 'package:mustang_viewer/src/shared_widgets/data_view.dart';
 import 'package:mustang_viewer/src/shared_widgets/timeline.dart';
 import 'package:mustang_viewer/src/utils/app_constants.dart';
 import 'package:mustang_viewer/src/utils/app_routes.dart';
+import 'package:mustang_viewer/src/utils/app_styles.dart';
 import 'package:mustang_viewer/src/utils/dialog_util.dart';
 
 import 'memory_service.dart';
@@ -118,9 +119,13 @@ class MemoryScreen extends StatelessWidget {
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: () => _disconnect(context, state),
-        label: const Text(AppConstants.disconnect),
+      floatingActionButton: SizedBox(
+        width: AppStyles.width100,
+        height: AppStyles.height20,
+        child: FloatingActionButton.extended(
+          label: const Text(AppConstants.disconnect),
+          onPressed: () => _disconnect(context, state),
+        ),
       ),
     );
   }

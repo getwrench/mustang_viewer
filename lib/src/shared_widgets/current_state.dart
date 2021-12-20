@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:mustang_viewer/src/shared_widgets/event_text.dart';
 import 'package:mustang_viewer/src/utils/app_constants.dart';
 import 'package:mustang_viewer/src/utils/app_styles.dart';
 import 'package:mustang_viewer/src/utils/event_view.dart';
@@ -55,12 +56,13 @@ class CurrentState extends StatelessWidget {
                 EventView eventView =
                     EventView.fromJson(jsonDecode(data[modelName] ?? '{}'));
                 return ListTile(
-                  selected: modelName == selectedModel,
                   dense: true,
                   onTap: () => onTap(modelName),
-                  title: Text(modelName),
-                  subtitle: Text(
-                    '${DateTime.fromMillisecondsSinceEpoch(eventView.timestamp)}',
+                  title: EventText(
+                    rowNum: index,
+                    ts: '${DateTime.fromMillisecondsSinceEpoch(eventView.timestamp)}',
+                    modelName: modelName,
+                    selected: modelName == selectedModel,
                   ),
                 );
               },
