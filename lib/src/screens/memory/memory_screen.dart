@@ -6,6 +6,8 @@ import 'package:mustang_viewer/src/shared_widgets/current_state.dart';
 import 'package:mustang_viewer/src/shared_widgets/data_view.dart';
 import 'package:mustang_viewer/src/shared_widgets/timeline.dart';
 import 'package:mustang_viewer/src/utils/app_constants.dart';
+import 'package:mustang_viewer/src/utils/app_routes.dart';
+import 'package:mustang_viewer/src/utils/dialog_util.dart';
 
 import 'memory_service.dart';
 import 'memory_state.state.dart';
@@ -17,6 +19,10 @@ class MemoryScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final ScrollController currentStateScrollController = ScrollController();
+    final ScrollController timelineScrollController = ScrollController();
+    final ScrollController dataViewScrollController = ScrollController();
+
     return StateProvider<MemoryState>(
       state: MemoryState(),
       child: Builder(
@@ -36,13 +42,25 @@ class MemoryScreen extends StatelessWidget {
             Text(state.memory.errorMsg);
           }
 
-          return _body(state, context);
+          return _body(
+            state,
+            context,
+            currentStateScrollController,
+            timelineScrollController,
+            dataViewScrollController,
+          );
         },
       ),
     );
   }
 
-  Widget _body(MemoryState? state, BuildContext context) {
+  Widget _body(
+    MemoryState? state,
+    BuildContext context,
+    ScrollController currentStateScrollController,
+    ScrollController timelineScrollController,
+    ScrollController dataViewScrollController,
+  ) {
     return Scaffold(
       appBar: AppBar(
         title: const Text(AppConstants.memory),
@@ -61,6 +79,9 @@ class MemoryScreen extends StatelessWidget {
                   state!.memory.targetAppState.toMap(),
                   (modelName) =>
                       MemoryService().showEventDataByModelName(modelName),
+                  currentStateScrollController,
+                  state.memory.selectedAppStateModel,
+                  state.memory.scroll,
                 ),
               ),
             ),
@@ -75,6 +96,9 @@ class MemoryScreen extends StatelessWidget {
                   state.memory.targetAppEvents.toList(),
                   (eventIndex) =>
                       MemoryService().showEventDataByEventIndex(eventIndex),
+                  timelineScrollController,
+                  state.memory.selectedTimelineModel,
+                  state.memory.scroll,
                 ),
               ),
             ),
@@ -85,12 +109,30 @@ class MemoryScreen extends StatelessWidget {
                     color: Theme.of(context).colorScheme.secondary,
                   ),
                 ),
-                child: DataView(state.memory.eventData),
+                child: DataView(
+                  state.memory.eventData,
+                  dataViewScrollController,
+                ),
               ),
             ),
           ],
         ),
       ),
+      floatingActionButton: FloatingActionButton.extended(
+        onPressed: () => _disconnect(context, state),
+        label: const Text(AppConstants.disconnect),
+      ),
     );
+  }
+
+  Future<void> _disconnect(BuildContext context, MemoryState state) async {
+    DialogUtil.show(context);
+    await MemoryService().disconnect();
+    Navigator.pop(context);
+    if (state.memory.errorOnEvent.isNotEmpty) {
+      DialogUtil.showMessage(context, state.memory.errorOnEvent);
+    }
+    MemoryService().clearConnectScreen();
+    Navigator.pushReplacementNamed(context, AppRoutes.connect);
   }
 }

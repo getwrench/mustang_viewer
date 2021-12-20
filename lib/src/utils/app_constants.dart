@@ -1,5 +1,7 @@
 class AppConstants {
   static const String connect = 'Connect';
+  static const String dataView = 'Data';
+  static const String disconnect = 'Disconnect';
   static const String debugServiceUrl = 'Debug service URL';
   static const String eventExtension = 'mustang';
   static const String hintServiceUrl =
@@ -10,5 +12,4 @@ class AppConstants {
   static const String unknownError = 'Unknown error';
   static const String timeline = 'Timeline';
   static const String liveAppState = 'Live App State';
-  static const String dataView = 'Data';
 }

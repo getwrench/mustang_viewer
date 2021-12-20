@@ -16,6 +16,8 @@ class ConnectScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final TextEditingController controller = TextEditingController();
+
     return StateProvider<ConnectState>(
       state: ConnectState(),
       child: Builder(
@@ -32,13 +34,17 @@ class ConnectScreen extends StatelessWidget {
             Text(state.connect.errorMsg);
           }
 
-          return _body(state, context);
+          return _body(state, context, controller);
         },
       ),
     );
   }
 
-  Widget _body(ConnectState? state, BuildContext context) {
+  Widget _body(
+    ConnectState state,
+    BuildContext context,
+    TextEditingController controller,
+  ) {
     return Scaffold(
       body: Center(
         child: SizedBox(
@@ -49,6 +55,7 @@ class ConnectScreen extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.all(AppStyles.padding8),
                 child: TextField(
+                  controller: controller,
                   autofocus: true,
                   decoration: const InputDecoration(
                     hintText: AppConstants.hintServiceUrl,
@@ -56,14 +63,19 @@ class ConnectScreen extends StatelessWidget {
                     floatingLabelBehavior: FloatingLabelBehavior.always,
                   ),
                   maxLines: 1,
-                  onChanged: (text) => ConnectService().updateWsUri(text),
+                  onChanged: (_) =>
+                      ConnectService().validateUri(controller.text),
                 ),
               ),
               Padding(
                 padding: const EdgeInsets.all(AppStyles.padding8),
                 child: ElevatedButton(
-                  onPressed: state!.connect.readToSubmit
-                      ? () => _connectToApp(context, state)
+                  onPressed: state.connect.readToSubmit
+                      ? () => _connectToApp(
+                            context,
+                            state,
+                            controller,
+                          )
                       : null,
                   child: const Text(AppConstants.connect),
                 ),
@@ -75,14 +87,19 @@ class ConnectScreen extends StatelessWidget {
     );
   }
 
-  Future<void> _connectToApp(BuildContext context, ConnectState? state) async {
+  Future<void> _connectToApp(
+    BuildContext context,
+    ConnectState state,
+    TextEditingController controller,
+  ) async {
     DialogUtil.show(context);
-    await ConnectService().connect(state?.connect.wsUri ?? '');
+    await ConnectService().connect(controller.text);
     Navigator.pop(context);
-    if (state?.connect.errorOnEvent.isNotEmpty ?? false) {
-      DialogUtil.showMessage(context, state!.connect.errorOnEvent);
+    if (state.connect.errorOnEvent.isNotEmpty) {
+      DialogUtil.showMessage(context, state.connect.errorOnEvent);
       return;
     }
+    ConnectService().clearMemoryScreen();
     Navigator.pushReplacementNamed(context, AppRoutes.memory);
   }
 }

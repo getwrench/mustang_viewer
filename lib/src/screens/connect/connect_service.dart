@@ -1,5 +1,6 @@
 import 'package:mustang_core/mustang_core.dart';
 import 'package:mustang_viewer/src/models/connect.model.dart';
+import 'package:mustang_viewer/src/models/memory.model.dart';
 import 'package:mustang_viewer/src/screens/connect/connect_service.service.dart';
 import 'package:vm_service/vm_service.dart';
 import 'package:vm_service/vm_service_io.dart';
@@ -12,6 +13,13 @@ class ConnectService {
     if (wsUri.isEmpty) return;
 
     Connect connect = WrenchStore.get<Connect>() ?? Connect();
+    connect = connect.rebuild(
+      (b) => b
+        ..errorOnEvent = ''
+        ..connected = false
+        ..vmService = null,
+    );
+
     try {
       VmService vmService = await vmServiceConnectUri(wsUri);
       connect = connect.rebuild(
@@ -19,7 +27,7 @@ class ConnectService {
           ..vmService = vmService
           ..connected = true,
       );
-    } catch (e) {
+    } catch (e, st) {
       connect = connect.rebuild(
         (b) => b
           ..vmService = null
@@ -31,22 +39,19 @@ class ConnectService {
     }
   }
 
-  void updateWsUri(String wsUri) {
+  void validateUri(String wsUri) {
     Connect connect = WrenchStore.get<Connect>() ?? Connect();
-
-    if (wsUri.isEmpty) {
-      connect = connect.rebuild(
-        (b) => b
-          ..wsUri = wsUri
-          ..readToSubmit = false,
-      );
-    } else {
-      connect = connect.rebuild(
-        (b) => b
-          ..wsUri = wsUri
-          ..readToSubmit = true,
-      );
-    }
+    connect = connect.rebuild(
+      (b) => b.readToSubmit = wsUri.isNotEmpty,
+    );
     updateState1(connect);
+  }
+
+  void clearMemoryScreen() {
+    Memory memory = WrenchStore.get<Memory>() ?? Memory();
+    memory = memory.rebuild(
+      (b) => b..clearScreenCache = true,
+    );
+    updateState1(Memory(), reload: false);
   }
 }

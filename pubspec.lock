@@ -318,7 +318,7 @@ packages:
       name: mustang_codegen
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.0.8"
+    version: "1.0.10"
   mustang_core:
     dependency: "direct main"
     description:

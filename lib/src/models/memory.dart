@@ -11,6 +11,10 @@ class $Memory {
   @SerializeField(false)
   late String errorMsg;
 
+  @InitField('')
+  @SerializeField(false)
+  late String errorOnEvent;
+
   @InitField(false)
   late bool clearScreenCache;
 
@@ -18,8 +22,17 @@ class $Memory {
   late BuiltMap<String, String> targetAppState;
 
   @InitField([])
-  late BuiltList<BuiltMap<String, String>> targetAppEvents;
+  late BuiltList<String> targetAppEvents;
 
   @InitField('{}')
   late String eventData;
+
+  @InitField('')
+  late String selectedAppStateModel;
+
+  @InitField(-1)
+  late int selectedTimelineModel;
+
+  @InitField(true)
+  late bool scroll;
 }

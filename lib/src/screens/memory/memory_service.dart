@@ -1,6 +1,5 @@
 import 'dart:convert';
 
-import 'package:built_collection/built_collection.dart';
 import 'package:mustang_core/mustang_core.dart';
 import 'package:mustang_viewer/src/models/connect.model.dart';
 import 'package:mustang_viewer/src/models/memory.model.dart';
@@ -39,33 +38,28 @@ class MemoryService {
     updateState1(memory);
 
     try {
-      Stream<Event> eventStream =
-          connect.vmService!.onEvent(EventKind.kExtension);
+      Stream<Event> eventStream = connect.vmService!.onExtensionEvent;
       await connect.vmService!.streamListen(EventKind.kExtension);
       await for (Event event in eventStream) {
         if (event.extensionKind == AppConstants.eventExtension) {
-          Map<String, dynamic> eventData = event.toJson();
-          String eventKey = eventData['extensionData']['modelName'];
-          int eventTs = eventData['timestamp'];
-          String eventVal = eventData['extensionData']['modelStr'];
-          if (eventKey.isNotEmpty && eventVal.isNotEmpty) {
-            Map<String, String> eventToPost = {
-              eventKey: jsonEncode(EventView(eventTs, eventVal).toJson()),
-            };
-            memory = memory.rebuild(
-              (b) => b
-                ..targetAppEvents = memory.targetAppEvents
-                    .rebuild((b) =>
-                        b.add(MapBuilder<String, String>(eventToPost).build()))
-                    .toBuilder()
-                ..targetAppState = memory.targetAppState
-                    .rebuild((b) => b.updateValue(
-                        eventKey, (_) => eventToPost[eventKey]!,
-                        ifAbsent: () => eventToPost[eventKey]!))
-                    .toBuilder(),
-            );
-            updateState1(memory);
-          }
+          Map<String, dynamic> eventData = event.extensionData?.data ?? {};
+          String eventKey = eventData['modelName'] ?? 'N/A';
+          String eventVal = eventData['modelStr'] ?? '{}';
+          String encodedEventData = jsonEncode(
+              EventView(event.timestamp!, eventVal, eventKey).toJson());
+          memory = memory.rebuild(
+            (b) => b
+              ..targetAppEvents = memory.targetAppEvents
+                  .rebuild((b) => b.add(encodedEventData))
+                  .toBuilder()
+              ..targetAppState = memory.targetAppState
+                  .rebuild((b) => b.updateValue(
+                      eventKey, (_) => encodedEventData,
+                      ifAbsent: () => encodedEventData))
+                  .toBuilder()
+              ..scroll = true,
+          );
+          updateState1(memory);
         }
       }
     } catch (e) {
@@ -83,19 +77,51 @@ class MemoryService {
     if (memory.targetAppState.toMap().containsKey(modelName)) {
       EventView eventView =
           EventView.fromJson(jsonDecode(memory.targetAppState[modelName]!));
-      memory = memory.rebuild((b) => b..eventData = eventView.data);
+      memory = memory.rebuild(
+        (b) => b
+          ..eventData = eventView.data
+          ..selectedAppStateModel = modelName
+          ..selectedTimelineModel = -1
+          ..scroll = false,
+      );
       updateState1(memory);
     }
   }
 
   void showEventDataByEventIndex(int eventIndex) {
     Memory memory = WrenchStore.get<Memory>() ?? Memory();
-    BuiltMap<String, String> event =
-        memory.targetAppEvents.toList().elementAt(eventIndex);
-    EventView eventView = EventView.fromJson(jsonDecode(event.values.first));
+    String eventData = memory.targetAppEvents.toList().elementAt(eventIndex);
+    EventView eventView = EventView.fromJson(jsonDecode(eventData));
     memory = memory.rebuild(
-      (b) => b..eventData = eventView.data,
+      (b) => b
+        ..eventData = eventView.data
+        ..selectedAppStateModel = ''
+        ..selectedTimelineModel = eventIndex
+        ..scroll = false,
     );
     updateState1(memory);
+  }
+
+  Future<void> disconnect() async {
+    Connect connect = WrenchStore.get<Connect>() ?? Connect();
+    try {
+      await connect.vmService!.dispose();
+      await connect.vmService!.onDone;
+      connect = connect.rebuild(
+        (b) => b
+          ..vmService = null
+          ..connected = false,
+      );
+    } catch (e) {
+      connect = connect.rebuild(
+        (b) => b..errorOnEvent = '$e',
+      );
+    } finally {
+      updateState1(connect, reload: false);
+    }
+  }
+
+  void clearConnectScreen() {
+    updateState1(Connect(), reload: false);
   }
 }

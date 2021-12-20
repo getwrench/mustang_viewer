@@ -18,9 +18,6 @@ class $Connect {
   @InitField(false)
   late bool clearScreenCache;
 
-  @InitField('')
-  late String wsUri;
-
   @SerializeField(false)
   @InitField(false)
   late bool connected;
