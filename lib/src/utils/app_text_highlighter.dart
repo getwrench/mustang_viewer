@@ -15,7 +15,11 @@ class AppTextHighlighter {
   /// that matched [search] string
   /// Input: String to be searched, search string
   /// Output: TextSpan with the substring highlighted
-  static TextSpan searchMatch(String stringToBeSearched, String search) {
+  static TextSpan searchMatch(
+    String stringToBeSearched,
+    String search,
+    void Function(GlobalKey) addHighlightKey,
+  ) {
     if (search.isEmpty) {
       return TextSpan(text: stringToBeSearched, style: _negRes);
     }
@@ -23,15 +27,24 @@ class AppTextHighlighter {
     String refinedSearch = search.toLowerCase();
     if (refinedMatch.contains(refinedSearch)) {
       if (refinedMatch.substring(0, refinedSearch.length) == refinedSearch) {
+        GlobalKey posGlobalKey = GlobalKey();
+        addHighlightKey(posGlobalKey);
         return TextSpan(
           style: _posRes,
           text: stringToBeSearched.substring(0, refinedSearch.length),
           children: [
+            WidgetSpan(
+              child: SizedBox.fromSize(
+                size: Size.zero,
+                key: posGlobalKey,
+              ),
+            ),
             searchMatch(
               stringToBeSearched.substring(
                 refinedSearch.length,
               ),
               search,
+              addHighlightKey,
             ),
           ],
         );
@@ -46,10 +59,12 @@ class AppTextHighlighter {
           ),
           children: [
             searchMatch(
-                stringToBeSearched.substring(
-                  refinedMatch.indexOf(refinedSearch),
-                ),
-                search),
+              stringToBeSearched.substring(
+                refinedMatch.indexOf(refinedSearch),
+              ),
+              search,
+              addHighlightKey,
+            ),
           ],
         );
       }
@@ -66,6 +81,7 @@ class AppTextHighlighter {
             refinedMatch.indexOf(refinedSearch),
           ),
           search,
+          addHighlightKey,
         ),
       ],
     );

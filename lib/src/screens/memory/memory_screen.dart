@@ -130,6 +130,8 @@ class MemoryScreen extends StatelessWidget {
                   state.memory.searchTerm,
                   MemoryService().setSearchTerm,
                   dataViewScrollController,
+                  MemoryService().updateSelectedHighlight,
+                  state.memory.selectedHighlight,
                 ),
               ),
             ),

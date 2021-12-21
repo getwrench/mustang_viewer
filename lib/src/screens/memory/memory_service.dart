@@ -79,7 +79,17 @@ class MemoryService {
 
   void setSearchTerm(String term) {
     Memory memory = WrenchStore.get<Memory>() ?? Memory();
-    memory = memory.rebuild((b) => b..searchTerm = term);
+    memory = memory.rebuild(
+      (b) => b
+        ..searchTerm = term
+        ..selectedHighlight = 0,
+    );
+    updateState1(memory);
+  }
+
+  void updateSelectedHighlight(int index) {
+    Memory memory = WrenchStore.get<Memory>() ?? Memory();
+    memory = memory.rebuild((b) => b..selectedHighlight = index);
     updateState1(memory);
   }
 

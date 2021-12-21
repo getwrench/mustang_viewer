@@ -6,12 +6,16 @@ import 'package:mustang_viewer/src/utils/app_styles.dart';
 import 'package:mustang_viewer/src/utils/app_text_highlighter.dart';
 import 'package:pretty_json/pretty_json.dart';
 
+List<GlobalKey> highlightKeys = [];
+
 class DataView extends StatelessWidget {
   const DataView(
     this.text,
     this.searchText,
     this.onSearchTermChange,
-    this.scrollController, {
+    this.scrollController,
+    this.selectedHighlight,
+    this.highlightIndex, {
     Key? key,
   }) : super(key: key);
 
@@ -19,9 +23,12 @@ class DataView extends StatelessWidget {
   final String searchText;
   final void Function(String term) onSearchTermChange;
   final ScrollController scrollController;
+  final void Function(int index) selectedHighlight;
+  final int highlightIndex;
 
   @override
   Widget build(BuildContext context) {
+    highlightKeys = [];
     return Column(
       children: [
         const Padding(
@@ -37,9 +44,56 @@ class DataView extends StatelessWidget {
         Padding(
           padding: const EdgeInsets.all(AppStyles.padding8),
           child: TextField(
-            decoration: const InputDecoration(
-              border: OutlineInputBorder(),
+            decoration: InputDecoration(
+              border: const OutlineInputBorder(),
               hintText: AppConstants.search,
+              suffixIcon: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  IconButton(
+                    onPressed: () {
+                      if (highlightKeys.isNotEmpty) {
+                        BuildContext context =
+                            highlightKeys[highlightIndex].currentContext!;
+                        Scrollable.ensureVisible(
+                          context,
+                          alignment: AppStyles.scrollAlignment,
+                          duration: const Duration(
+                            milliseconds: AppConstants.milliSec500,
+                          ),
+                        );
+                        if (highlightIndex + 2 < highlightKeys.length) {
+                          selectedHighlight(highlightIndex + 1);
+                        }
+                      }
+                    },
+                    icon: const Icon(
+                      Icons.arrow_downward,
+                    ),
+                  ),
+                  IconButton(
+                    onPressed: () {
+                      if (highlightKeys.isNotEmpty) {
+                        BuildContext context =
+                            highlightKeys[highlightIndex].currentContext!;
+                        Scrollable.ensureVisible(
+                          context,
+                          alignment: AppStyles.scrollAlignment,
+                          duration: const Duration(
+                            milliseconds: AppConstants.milliSec500,
+                          ),
+                        );
+                        if (highlightIndex - 1 >= 0) {
+                          selectedHighlight(highlightIndex - 1);
+                        }
+                      }
+                    },
+                    icon: const Icon(
+                      Icons.arrow_upward,
+                    ),
+                  )
+                ],
+              ),
             ),
             onChanged: onSearchTermChange,
           ),
@@ -60,6 +114,7 @@ class DataView extends StatelessWidget {
                         text: AppTextHighlighter.searchMatch(
                           prettyJson(jsonDecode(text)),
                           searchText,
+                          _addHighlightKey,
                         ),
                       ),
                     ),
@@ -71,5 +126,9 @@ class DataView extends StatelessWidget {
         )
       ],
     );
+  }
+
+  void _addHighlightKey(GlobalKey key) {
+    highlightKeys.add(key);
   }
 }

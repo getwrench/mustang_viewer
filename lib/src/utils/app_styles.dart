@@ -18,4 +18,5 @@ class AppStyles {
   static const double width100 = 100.0;
   static const double width300 = 300.0;
   static const double width400 = 400.0;
+  static const double scrollAlignment = 0.2;
 }

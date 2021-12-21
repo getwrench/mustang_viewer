@@ -38,4 +38,7 @@ class $Memory {
 
   @InitField('')
   late String searchTerm;
+
+  @InitField(0)
+  late int selectedHighlight;
 }
