@@ -65,66 +65,75 @@ class MemoryScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text(AppConstants.memory),
+        actions: [
+          MaterialButton(
+            onPressed: () => _disconnect(context, state!),
+            child: const Text(AppConstants.disconnect),
+            hoverColor: Theme.of(context).colorScheme.primary,
+          ),
+        ],
       ),
       body: Center(
-        child: Column(
+        child: Row(
           children: [
             Expanded(
-              child: DecoratedBox(
-                decoration: BoxDecoration(
-                  border: Border.all(
-                    color: Theme.of(context).colorScheme.secondary,
+              flex: AppStyles.flex4,
+              child: Column(
+                children: [
+                  Expanded(
+                    child: DecoratedBox(
+                      decoration: BoxDecoration(
+                        border: Border.all(
+                          color: Theme.of(context).colorScheme.primary,
+                        ),
+                      ),
+                      child: CurrentState(
+                        state!.memory.targetAppState.toMap(),
+                        (modelName) =>
+                            MemoryService().showEventDataByModelName(modelName),
+                        currentStateScrollController,
+                        state.memory.selectedAppStateModel,
+                        state.memory.scroll,
+                      ),
+                    ),
                   ),
-                ),
-                child: CurrentState(
-                  state!.memory.targetAppState.toMap(),
-                  (modelName) =>
-                      MemoryService().showEventDataByModelName(modelName),
-                  currentStateScrollController,
-                  state.memory.selectedAppStateModel,
-                  state.memory.scroll,
-                ),
+                  Expanded(
+                    child: DecoratedBox(
+                      decoration: BoxDecoration(
+                        border: Border.all(
+                          color: Theme.of(context).colorScheme.primary,
+                        ),
+                      ),
+                      child: Timeline(
+                        state.memory.targetAppEvents.toList(),
+                        (eventIndex) => MemoryService()
+                            .showEventDataByEventIndex(eventIndex),
+                        timelineScrollController,
+                        state.memory.selectedTimelineModel,
+                        state.memory.scroll,
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ),
             Expanded(
+              flex: AppStyles.flex7,
               child: DecoratedBox(
                 decoration: BoxDecoration(
                   border: Border.all(
-                    color: Theme.of(context).colorScheme.secondary,
-                  ),
-                ),
-                child: Timeline(
-                  state.memory.targetAppEvents.toList(),
-                  (eventIndex) =>
-                      MemoryService().showEventDataByEventIndex(eventIndex),
-                  timelineScrollController,
-                  state.memory.selectedTimelineModel,
-                  state.memory.scroll,
-                ),
-              ),
-            ),
-            Expanded(
-              child: DecoratedBox(
-                decoration: BoxDecoration(
-                  border: Border.all(
-                    color: Theme.of(context).colorScheme.secondary,
+                    color: Theme.of(context).colorScheme.primary,
                   ),
                 ),
                 child: DataView(
                   state.memory.eventData,
+                  state.memory.searchTerm,
+                  MemoryService().setSearchTerm,
                   dataViewScrollController,
                 ),
               ),
             ),
           ],
-        ),
-      ),
-      floatingActionButton: SizedBox(
-        width: AppStyles.width100,
-        height: AppStyles.height20,
-        child: FloatingActionButton.extended(
-          label: const Text(AppConstants.disconnect),
-          onPressed: () => _disconnect(context, state),
         ),
       ),
     );
