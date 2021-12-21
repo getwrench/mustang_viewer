@@ -60,7 +60,7 @@ class CurrentState extends StatelessWidget {
                   dense: true,
                   onTap: () => onTap(modelName),
                   title: EventText(
-                    rowNum: index,
+                    rowNum: index + 1,
                     ts: AppDateTime.timeForDateTime(
                       DateTime.fromMillisecondsSinceEpoch(eventView.timestamp),
                     ),

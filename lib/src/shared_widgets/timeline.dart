@@ -58,7 +58,7 @@ class Timeline extends StatelessWidget {
                   dense: true,
                   onTap: () => onTap(index),
                   title: EventText(
-                    rowNum: index,
+                    rowNum: index + 1,
                     ts: AppDateTime.timeForDateTime(
                       DateTime.fromMillisecondsSinceEpoch(eventView.timestamp),
                     ),
