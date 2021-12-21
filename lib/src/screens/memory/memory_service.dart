@@ -74,6 +74,12 @@ class MemoryService {
     clearMemoizedScreen(reload: reload);
   }
 
+  void setSearchTerm(String term) {
+    Memory memory = WrenchStore.get<Memory>() ?? Memory();
+    memory = memory.rebuild((b) => b..searchTerm = term);
+    updateState1(memory);
+  }
+
   void showEventDataByModelName(String modelName) {
     Memory memory = WrenchStore.get<Memory>() ?? Memory();
     if (memory.targetAppState.toMap().containsKey(modelName)) {

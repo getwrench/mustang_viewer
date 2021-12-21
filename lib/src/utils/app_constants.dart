@@ -12,4 +12,5 @@ class AppConstants {
   static const String unknownError = 'Unknown error';
   static const String timeline = 'Timeline';
   static const String liveAppState = 'Live App State';
+  static const String search = 'Search';
 }
