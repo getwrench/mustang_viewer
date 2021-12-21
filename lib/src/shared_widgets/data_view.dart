@@ -36,7 +36,7 @@ class DataView extends StatelessWidget {
           child: TextField(
             decoration: const InputDecoration(
               border: OutlineInputBorder(),
-              hintText: AppConstants.enterASearchTerm,
+              hintText: AppConstants.search,
             ),
             onChanged: onSearchTermChange,
           ),

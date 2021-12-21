@@ -16,11 +16,11 @@ class AppTextHighlighter {
   /// Input: String to be searched, search string
   /// Output: TextSpan with the substring highlighted
   static TextSpan searchMatch(String stringToBeSearched, String search) {
-    if (search == "") {
+    if (search.isEmpty) {
       return TextSpan(text: stringToBeSearched, style: _negRes);
     }
-    var refinedMatch = stringToBeSearched.toLowerCase();
-    var refinedSearch = search.toLowerCase();
+    String refinedMatch = stringToBeSearched.toLowerCase();
+    String refinedSearch = search.toLowerCase();
     if (refinedMatch.contains(refinedSearch)) {
       if (refinedMatch.substring(0, refinedSearch.length) == refinedSearch) {
         return TextSpan(
