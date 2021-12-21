@@ -21,14 +21,14 @@ class EventText extends StatelessWidget {
       text: TextSpan(
         children: <TextSpan>[
           TextSpan(
-            text: '#$rowNum ',
+            text: '#$rowNum   ',
             style: const TextStyle(
               fontSize: AppStyles.font12,
               color: Colors.grey,
             ),
           ),
           TextSpan(
-            text: '$ts ',
+            text: '$ts   ',
             style: const TextStyle(
               fontSize: AppStyles.font12,
               color: Colors.grey,
@@ -37,10 +37,9 @@ class EventText extends StatelessWidget {
           TextSpan(
             text: modelName,
             style: TextStyle(
-              fontSize: AppStyles.font12,
-              color: selected
-                  ? Theme.of(context).colorScheme.secondary
-                  : Theme.of(context).textTheme.bodyText1!.backgroundColor,
+              fontSize: selected ? AppStyles.font14 : AppStyles.font12,
+              fontWeight: selected ? FontWeight.bold : null,
+              color: selected ? Theme.of(context).colorScheme.primary : null,
             ),
           ),
         ],
