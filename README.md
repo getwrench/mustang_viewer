@@ -14,6 +14,6 @@ From the terminal, run the following commands.
 If you get error "SocketException: Connection failed (OS Error: Operation not permitted, errno = 1)" while trying to connect in Mac,
 add below mentioned key-value pair in **macos/Runner/DebugProfile.entitlements** and **macos/Runner/Release.entitlements**
 
-```<key>com.apple.security.network.client</key>
-   <true/>```
+**<key>com.apple.security.network.client</key>
+   <true/>**
 
