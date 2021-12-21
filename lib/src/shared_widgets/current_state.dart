@@ -38,11 +38,14 @@ class CurrentState extends StatelessWidget {
     List<String> items = data.keys.toList();
     return Column(
       children: [
-        Padding(
-          padding: const EdgeInsets.all(AppStyles.padding8),
+        const Padding(
+          padding: EdgeInsets.all(AppStyles.padding8),
           child: Text(
             AppConstants.liveAppState,
-            style: Theme.of(context).textTheme.subtitle2,
+            style: TextStyle(
+              color: Colors.grey,
+              fontWeight: FontWeight.bold,
+            ),
           ),
         ),
         Expanded(

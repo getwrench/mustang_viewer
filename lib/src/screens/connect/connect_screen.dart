@@ -58,9 +58,8 @@ class ConnectScreen extends StatelessWidget {
                   controller: controller,
                   autofocus: true,
                   decoration: const InputDecoration(
+                    border: OutlineInputBorder(),
                     hintText: AppConstants.hintServiceUrl,
-                    labelText: AppConstants.debugServiceUrl,
-                    floatingLabelBehavior: FloatingLabelBehavior.always,
                   ),
                   maxLines: 1,
                   onChanged: (_) =>

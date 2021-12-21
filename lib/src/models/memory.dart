@@ -36,6 +36,6 @@ class $Memory {
   @InitField(true)
   late bool scroll;
 
-  @InitField("")
+  @InitField('')
   late String searchTerm;
 }

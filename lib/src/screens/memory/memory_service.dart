@@ -60,8 +60,7 @@ class MemoryService {
               ..scroll = true,
           );
           memory = memory.rebuild((b) => b
-            ..eventData =
-                EventView.fromJson(jsonDecode(memory.targetAppEvents.last)).data
+            ..eventData = EventView.fromJson(jsonDecode(encodedEventData)).data
             ..selectedTimelineModel = (memory.targetAppEvents.length - 1));
           updateState1(memory);
         }

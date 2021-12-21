@@ -24,15 +24,18 @@ class DataView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        Padding(
-          padding: const EdgeInsets.all(AppStyles.padding8),
+        const Padding(
+          padding: EdgeInsets.all(AppStyles.padding8),
           child: Text(
             AppConstants.dataView,
-            style: Theme.of(context).textTheme.subtitle2,
+            style: TextStyle(
+              color: Colors.grey,
+              fontWeight: FontWeight.bold,
+            ),
           ),
         ),
         Padding(
-          padding: const EdgeInsets.all(AppStyles.padding10),
+          padding: const EdgeInsets.all(AppStyles.padding8),
           child: TextField(
             decoration: const InputDecoration(
               border: OutlineInputBorder(),

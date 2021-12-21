@@ -37,11 +37,14 @@ class Timeline extends StatelessWidget {
     }
     return Column(
       children: [
-        Padding(
-          padding: const EdgeInsets.all(AppStyles.padding8),
+        const Padding(
+          padding: EdgeInsets.all(AppStyles.padding8),
           child: Text(
             AppConstants.timeline,
-            style: Theme.of(context).textTheme.subtitle2,
+            style: TextStyle(
+              color: Colors.grey,
+              fontWeight: FontWeight.bold,
+            ),
           ),
         ),
         Expanded(
