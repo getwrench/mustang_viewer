@@ -32,24 +32,26 @@ class DataView extends StatelessWidget {
     highlightKeys = [];
     SchedulerBinding.instance?.addPostFrameCallback(
           (_) {
-            if(highlightKeys.isNotEmpty) {
-              BuildContext highlightContext =
-              highlightKeys.first.currentContext!;
-              Scrollable.ensureVisible(
-                highlightContext,
-                alignment: AppStyles.scrollAlignment,
-                duration: const Duration(
-                  milliseconds: AppConstants.milliSec500,
-                ),
-              );
-            } else {
-              scrollController.animateTo(
-                scrollController.position.minScrollExtent,
-                duration: const Duration(
-                  milliseconds: AppConstants.milliSec500,
-                ),
-                curve: Curves.fastOutSlowIn,
-              );
+            if(highlightIndex == 0) {
+              if(highlightKeys.isNotEmpty) {
+                BuildContext highlightContext =
+                highlightKeys.first.currentContext!;
+                Scrollable.ensureVisible(
+                  highlightContext,
+                  alignment: AppStyles.scrollAlignment,
+                  duration: const Duration(
+                    milliseconds: AppConstants.milliSec500,
+                  ),
+                );
+              } else {
+                scrollController.animateTo(
+                  scrollController.position.minScrollExtent,
+                  duration: const Duration(
+                    milliseconds: AppConstants.milliSec500,
+                  ),
+                  curve: Curves.fastOutSlowIn,
+                );
+              }
             }
           },
     );
