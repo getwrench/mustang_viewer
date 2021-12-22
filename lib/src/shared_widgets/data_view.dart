@@ -31,29 +31,27 @@ class DataView extends StatelessWidget {
   Widget build(BuildContext context) {
     highlightKeys = [];
     SchedulerBinding.instance?.addPostFrameCallback(
-          (_) {
-            if(highlightIndex == 0) {
-              if(highlightKeys.isNotEmpty) {
-                BuildContext highlightContext =
-                highlightKeys.first.currentContext!;
-                Scrollable.ensureVisible(
-                  highlightContext,
-                  alignment: AppStyles.scrollAlignment,
-                  duration: const Duration(
-                    milliseconds: AppConstants.milliSec500,
-                  ),
-                );
-              } else {
-                scrollController.animateTo(
-                  scrollController.position.minScrollExtent,
-                  duration: const Duration(
-                    milliseconds: AppConstants.milliSec500,
-                  ),
-                  curve: Curves.fastOutSlowIn,
-                );
-              }
-            }
-          },
+      (_) {
+        if (highlightKeys.isNotEmpty) {
+          BuildContext highlightContext =
+              highlightKeys[highlightIndex].currentContext!;
+          Scrollable.ensureVisible(
+            highlightContext,
+            alignment: AppStyles.scrollAlignment,
+            duration: const Duration(
+              milliseconds: AppConstants.milliSec500,
+            ),
+          );
+        } else {
+          scrollController.animateTo(
+            scrollController.position.minScrollExtent,
+            duration: const Duration(
+              milliseconds: AppConstants.milliSec500,
+            ),
+            curve: Curves.fastOutSlowIn,
+          );
+        }
+      },
     );
 
     return Column(
@@ -80,15 +78,6 @@ class DataView extends StatelessWidget {
                   IconButton(
                     onPressed: () {
                       if (highlightKeys.isNotEmpty) {
-                        BuildContext context =
-                            highlightKeys[highlightIndex].currentContext!;
-                        Scrollable.ensureVisible(
-                          context,
-                          alignment: AppStyles.scrollAlignment,
-                          duration: const Duration(
-                            milliseconds: AppConstants.milliSec500,
-                          ),
-                        );
                         if (highlightIndex + 2 < highlightKeys.length) {
                           selectedHighlight(highlightIndex + 1);
                         }
@@ -101,15 +90,6 @@ class DataView extends StatelessWidget {
                   IconButton(
                     onPressed: () {
                       if (highlightKeys.isNotEmpty) {
-                        BuildContext context =
-                            highlightKeys[highlightIndex].currentContext!;
-                        Scrollable.ensureVisible(
-                          context,
-                          alignment: AppStyles.scrollAlignment,
-                          duration: const Duration(
-                            milliseconds: AppConstants.milliSec500,
-                          ),
-                        );
                         if (highlightIndex - 1 >= 0) {
                           selectedHighlight(highlightIndex - 1);
                         }
