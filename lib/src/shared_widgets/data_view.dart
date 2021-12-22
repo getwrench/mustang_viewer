@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:mustang_viewer/src/utils/app_constants.dart';
 import 'package:mustang_viewer/src/utils/app_styles.dart';
 import 'package:mustang_viewer/src/utils/app_text_highlighter.dart';
@@ -29,6 +30,30 @@ class DataView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     highlightKeys = [];
+    SchedulerBinding.instance?.addPostFrameCallback(
+          (_) {
+            if(highlightKeys.isNotEmpty) {
+              BuildContext highlightContext =
+              highlightKeys.first.currentContext!;
+              Scrollable.ensureVisible(
+                highlightContext,
+                alignment: AppStyles.scrollAlignment,
+                duration: const Duration(
+                  milliseconds: AppConstants.milliSec500,
+                ),
+              );
+            } else {
+              scrollController.animateTo(
+                scrollController.position.minScrollExtent,
+                duration: const Duration(
+                  milliseconds: AppConstants.milliSec500,
+                ),
+                curve: Curves.fastOutSlowIn,
+              );
+            }
+          },
+    );
+
     return Column(
       children: [
         const Padding(
