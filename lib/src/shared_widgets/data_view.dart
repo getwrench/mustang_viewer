@@ -78,7 +78,7 @@ class DataView extends StatelessWidget {
                   IconButton(
                     onPressed: () {
                       if (highlightKeys.isNotEmpty) {
-                        if (highlightIndex + 2 < highlightKeys.length) {
+                        if (highlightIndex + 1 < highlightKeys.length) {
                           selectedHighlight(highlightIndex + 1);
                         }
                       }
