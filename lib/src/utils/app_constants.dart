@@ -13,4 +13,5 @@ class AppConstants {
   static const String timeline = 'Timeline';
   static const String liveAppState = 'Live App State';
   static const String search = 'Search';
+  static const String found = 'Found';
 }
