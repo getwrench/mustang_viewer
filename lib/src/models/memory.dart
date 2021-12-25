@@ -39,7 +39,7 @@ class $Memory {
   @InitField('')
   late String searchTerm;
 
-  @InitField([])
+  @InitField({})
   late BuiltMap<int, int> highlightIndices;
 
   @InitField(0)

@@ -130,7 +130,7 @@ class MemoryScreen extends StatelessWidget {
                   state.memory.searchTerm,
                   MemoryService().setSearchTerm,
                   dataViewScrollController,
-                  state.memory.highlightIndices?.toMap() ?? <int, int>{},
+                  state.memory.highlightIndices.toMap(),
                   state.memory.indexOfSelectedHighlight,
                   MemoryService().updateSelectedHighlight,
                 ),
