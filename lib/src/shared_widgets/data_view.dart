@@ -65,7 +65,7 @@ class DataView extends StatelessWidget {
             decoration: InputDecoration(
               border: const OutlineInputBorder(),
               hintText: AppConstants.search,
-              suffixIcon: (highlightIndices.isNotEmpty)
+              suffixIcon: (highlightIndices.isNotEmpty && searchText.isNotEmpty)
                   ? Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
