@@ -4,12 +4,13 @@ class AppTextHighlighter {
     String stringToBeSearched,
     String searchTerm,
   ) {
-    List<int> indexList = [];
-    int index = stringToBeSearched.indexOf(searchTerm);
-    while (index >= 0 && searchTerm.isNotEmpty) {
-      indexList.add(index);
-      index = stringToBeSearched.indexOf(searchTerm, index + 1);
+    Iterable<RegExpMatch> matches = RegExp(searchTerm).allMatches(
+      stringToBeSearched,
+    );
+    List<int> occurences = [];
+    for (RegExpMatch match in matches) {
+      occurences.add(match.start);
     }
-    return indexList;
+    return occurences;
   }
 }
