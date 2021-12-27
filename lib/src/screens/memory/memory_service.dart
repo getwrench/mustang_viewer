@@ -1,12 +1,15 @@
 import 'dart:convert';
 
+import 'package:built_collection/built_collection.dart';
 import 'package:mustang_core/mustang_core.dart';
 import 'package:mustang_viewer/src/models/connect.model.dart';
 import 'package:mustang_viewer/src/models/memory.model.dart';
 import 'package:mustang_viewer/src/screens/memory/memory_service.service.dart';
 import 'package:mustang_viewer/src/screens/memory/memory_state.dart';
 import 'package:mustang_viewer/src/utils/app_constants.dart';
+import 'package:mustang_viewer/src/utils/app_text_highlighter.dart';
 import 'package:mustang_viewer/src/utils/event_view.dart';
+import 'package:pretty_json/pretty_json.dart';
 import 'package:vm_service/vm_service.dart';
 
 @ScreenService(screenState: $MemoryState)
@@ -79,7 +82,17 @@ class MemoryService {
 
   void setSearchTerm(String term) {
     Memory memory = WrenchStore.get<Memory>() ?? Memory();
-    memory = memory.rebuild((b) => b..searchTerm = term);
+    String prettyEventData = prettyJson(jsonDecode(memory.eventData));
+    Map<int, int> highlightIndices = AppTextHighlighter.findHighlights(
+      prettyEventData.toLowerCase(),
+      term.toLowerCase(),
+    );
+    memory = memory.rebuild(
+      (b) => b
+        ..searchTerm = term
+        ..indexOfSelectedHighlight = 0
+        ..highlightIndices = MapBuilder<int, int>(highlightIndices),
+    );
     updateState1(memory);
   }
 
@@ -95,6 +108,15 @@ class MemoryService {
           ..selectedTimelineModel = -1
           ..scroll = false,
       );
+      updateState1(memory);
+    }
+  }
+
+  void updateSelectedHighlight(int index) {
+    Memory memory = WrenchStore.get<Memory>() ?? Memory();
+    if ((memory.highlightIndices!.entries.length > index) &&
+        (index) >= 0) {
+      memory = memory.rebuild((b) => b..indexOfSelectedHighlight = index);
       updateState1(memory);
     }
   }
