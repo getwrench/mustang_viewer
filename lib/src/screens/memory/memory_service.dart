@@ -114,7 +114,8 @@ class MemoryService {
 
   void updateSelectedHighlight(int index) {
     Memory memory = WrenchStore.get<Memory>() ?? Memory();
-    if ((memory.highlightIndices!.entries.length > index) &&
+    if (memory.highlightIndices.isNotEmpty &&
+        (memory.highlightIndices.entries.length > index) &&
         (index) >= 0) {
       memory = memory.rebuild((b) => b..indexOfSelectedHighlight = index);
       updateState1(memory);

@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:mustang_viewer/src/utils/app_constants.dart';
+import 'package:mustang_viewer/src/utils/app_shortcuts.dart';
 import 'package:mustang_viewer/src/utils/app_styles.dart';
 import 'package:pretty_json/pretty_json.dart';
 
@@ -35,90 +36,104 @@ class DataView extends StatelessWidget {
 
     SchedulerBinding.instance?.addPostFrameCallback(
       (_) {
-        Scrollable.ensureVisible(
-          highlightKeys[indexOfSelectedHighlight].currentContext!,
-          alignment: AppStyles.dataViewScrollAlignment,
-          duration: const Duration(
-            milliseconds: AppStyles.duration500,
-          ),
-        );
+        if (highlightKeys.isNotEmpty) {
+          Scrollable.ensureVisible(
+            highlightKeys[indexOfSelectedHighlight].currentContext!,
+            alignment: AppStyles.dataViewScrollAlignment,
+            duration: const Duration(
+              milliseconds: AppStyles.duration500,
+            ),
+          );
+        }
       },
     );
 
-    return Column(
-      children: [
-        const Padding(
-          padding: EdgeInsets.all(AppStyles.padding8),
-          child: Text(
-            AppConstants.dataView,
-            style: TextStyle(
-              color: Colors.grey,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-        ),
-        Padding(
-          padding: const EdgeInsets.all(AppStyles.padding8),
-          child: TextField(
-            decoration: InputDecoration(
-              border: const OutlineInputBorder(),
-              hintText: AppConstants.search,
-              suffixIcon: (highlightIndices.entries.isNotEmpty)
-                  ? Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Text(
-                            '${highlightIndices.entries.length} ${AppConstants.found}'),
-                        IconButton(
-                          onPressed: () {
-                            updateSelectedIndex(indexOfSelectedHighlight + 1);
-                          },
-                          icon: const Icon(
-                            Icons.arrow_downward,
-                          ),
-                        ),
-                        IconButton(
-                          onPressed: () {
-                            updateSelectedIndex(indexOfSelectedHighlight - 1);
-                          },
-                          icon: const Icon(
-                            Icons.arrow_upward,
-                          ),
-                        ),
-                      ],
-                    )
-                  : null,
-            ),
-            onChanged: onSearchTermChange,
-          ),
-        ),
-        Expanded(
-          child: Scrollbar(
-            isAlwaysShown: true,
-            controller: scrollController,
-            child: SingleChildScrollView(
-              controller: scrollController,
-              child: Padding(
-                padding: const EdgeInsets.all(AppStyles.padding8),
-                child: Row(
-                  children: [
-                    Flexible(
-                      child: RichText(
-                        textScaleFactor: AppStyles.dataTextScaleFactor,
-                        text: highlightSearchTerm(
-                          highlightIndices,
-                          prettyJson(jsonDecode(text)),
-                          highlightKeys,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
+    return FocusableActionDetector(
+      autofocus: true,
+      shortcuts: AppShortcuts.getShortCuts(),
+      actions: {
+        ArrowUpKeyPressIntent: CallbackAction(onInvoke: (e) {
+          updateSelectedIndex(indexOfSelectedHighlight - 1);
+        }),
+        ArrowDownKeyPressIntent: CallbackAction(onInvoke: (e) {
+          updateSelectedIndex(indexOfSelectedHighlight + 1);
+        }),
+      },
+      child: Column(
+        children: [
+          const Padding(
+            padding: EdgeInsets.all(AppStyles.padding8),
+            child: Text(
+              AppConstants.dataView,
+              style: TextStyle(
+                color: Colors.grey,
+                fontWeight: FontWeight.bold,
               ),
             ),
           ),
-        )
-      ],
+          Padding(
+            padding: const EdgeInsets.all(AppStyles.padding8),
+            child: TextField(
+              decoration: InputDecoration(
+                border: const OutlineInputBorder(),
+                hintText: AppConstants.search,
+                suffixIcon: (highlightIndices.entries.isNotEmpty)
+                    ? Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(
+                              '${highlightIndices.entries.length} ${AppConstants.found}'),
+                          IconButton(
+                            onPressed: () {
+                              updateSelectedIndex(indexOfSelectedHighlight + 1);
+                            },
+                            icon: const Icon(
+                              Icons.arrow_downward,
+                            ),
+                          ),
+                          IconButton(
+                            onPressed: () {
+                              updateSelectedIndex(indexOfSelectedHighlight - 1);
+                            },
+                            icon: const Icon(
+                              Icons.arrow_upward,
+                            ),
+                          ),
+                        ],
+                      )
+                    : null,
+              ),
+              onChanged: onSearchTermChange,
+            ),
+          ),
+          Expanded(
+            child: Scrollbar(
+              isAlwaysShown: true,
+              controller: scrollController,
+              child: SingleChildScrollView(
+                controller: scrollController,
+                child: Padding(
+                  padding: const EdgeInsets.all(AppStyles.padding8),
+                  child: Row(
+                    children: [
+                      Flexible(
+                        child: RichText(
+                          textScaleFactor: AppStyles.dataTextScaleFactor,
+                          text: highlightSearchTerm(
+                            highlightIndices,
+                            prettyJson(jsonDecode(text)),
+                            highlightKeys,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          )
+        ],
+      ),
     );
   }
 
