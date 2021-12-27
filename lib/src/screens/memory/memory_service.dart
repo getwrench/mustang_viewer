@@ -83,7 +83,7 @@ class MemoryService {
   void setSearchTerm(String term) {
     Memory memory = WrenchStore.get<Memory>() ?? Memory();
     String prettyEventData = prettyJson(jsonDecode(memory.eventData));
-    Map<int, int> highlightIndices = AppTextHighlighter.findHighlights(
+    List<int> highlightIndices = AppTextHighlighter.findHighlights(
       prettyEventData.toLowerCase(),
       term.toLowerCase(),
     );
@@ -91,7 +91,7 @@ class MemoryService {
       (b) => b
         ..searchTerm = term
         ..indexOfSelectedHighlight = 0
-        ..highlightIndices = MapBuilder<int, int>(highlightIndices),
+        ..highlightIndices = ListBuilder<int>(highlightIndices),
     );
     updateState1(memory);
   }
@@ -114,10 +114,11 @@ class MemoryService {
 
   void updateSelectedHighlight(int index) {
     Memory memory = WrenchStore.get<Memory>() ?? Memory();
-    if ((memory.highlightIndices!.entries.length > index) &&
-        (index) >= 0) {
-      memory = memory.rebuild((b) => b..indexOfSelectedHighlight = index);
-      updateState1(memory);
+    if(memory.highlightIndices.isNotEmpty) {
+      if ((memory.highlightIndices.length > index) && (index) >= 0) {
+        memory = memory.rebuild((b) => b..indexOfSelectedHighlight = index);
+        updateState1(memory);
+      }
     }
   }
 
