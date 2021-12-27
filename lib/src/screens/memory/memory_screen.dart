@@ -111,6 +111,8 @@ class MemoryScreen extends StatelessWidget {
                         timelineScrollController,
                         state.memory.selectedTimelineModel,
                         state.memory.scroll,
+                        MemoryService().updatedSelectedModel,
+                        state.memory.selectedModelName,
                       ),
                     ),
                   ),

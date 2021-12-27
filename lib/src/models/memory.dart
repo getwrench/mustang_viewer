@@ -38,4 +38,7 @@ class $Memory {
 
   @InitField('')
   late String searchTerm;
+
+  @InitField('All')
+  late String selectedModelName;
 }

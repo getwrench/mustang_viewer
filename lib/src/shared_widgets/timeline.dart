@@ -14,7 +14,9 @@ class Timeline extends StatelessWidget {
     this.onTap,
     this.scrollController,
     this.selectedEventIndex,
-    this.scroll, {
+    this.scroll,
+    this.onDropdownChange,
+    this.selectedModelName, {
     Key? key,
   }) : super(key: key);
 
@@ -23,6 +25,8 @@ class Timeline extends StatelessWidget {
   final ScrollController scrollController;
   final int selectedEventIndex;
   final bool scroll;
+  final void Function(String?) onDropdownChange;
+  final String selectedModelName;
 
   @override
   Widget build(BuildContext context) {
@@ -35,6 +39,17 @@ class Timeline extends StatelessWidget {
         ),
       );
     }
+    List<String> dropdownItems = [
+      'All',
+    ];
+
+    for (String entry in data) {
+      EventView eventView = EventView.fromJson(jsonDecode(entry));
+      if (!dropdownItems.contains(eventView.label)) {
+        dropdownItems.add(eventView.label);
+      }
+    }
+
     return Column(
       children: [
         const Padding(
@@ -44,6 +59,29 @@ class Timeline extends StatelessWidget {
             style: TextStyle(
               color: Colors.grey,
               fontWeight: FontWeight.bold,
+            ),
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.symmetric(
+            horizontal: AppStyles.padding8,
+          ),
+          child: SizedBox(
+            width: MediaQuery.of(context).size.width,
+            child: DropdownButtonFormField<String>(
+              items: dropdownItems
+                  .map(
+                    (e) => DropdownMenuItem<String>(
+                      child: Text(e),
+                      value: e,
+                    ),
+                  )
+                  .toList(),
+              value: selectedModelName,
+              decoration: const InputDecoration(
+                border: OutlineInputBorder(),
+              ),
+              onChanged: onDropdownChange,
             ),
           ),
         ),
@@ -57,20 +95,38 @@ class Timeline extends StatelessWidget {
               itemBuilder: (BuildContext context, int index) {
                 EventView eventView =
                     EventView.fromJson(jsonDecode(data[index]));
-                return ListTile(
-                  dense: true,
-                  onTap: () => onTap(index),
-                  title: EventText(
-                    rowNum: index + 1,
-                    ts: AppDateTime.timeForDateTime(
-                      DateTime.fromMillisecondsSinceEpoch(eventView.timestamp),
+                if (selectedModelName == eventView.label) {
+                  return ListTile(
+                    dense: true,
+                    onTap: () => onTap(index),
+                    title: EventText(
+                      rowNum: index + 1,
+                      ts: AppDateTime.timeForDateTime(
+                        DateTime.fromMillisecondsSinceEpoch(
+                            eventView.timestamp),
+                      ),
+                      modelName: eventView.label,
+                      selected: index == selectedEventIndex,
                     ),
-                    modelName: eventView.label,
-                    selected: index == selectedEventIndex,
-                  ),
-                );
+                  );
+                } else if (selectedModelName == 'All') {
+                  return ListTile(
+                    dense: true,
+                    onTap: () => onTap(index),
+                    title: EventText(
+                      rowNum: index + 1,
+                      ts: AppDateTime.timeForDateTime(
+                        DateTime.fromMillisecondsSinceEpoch(
+                            eventView.timestamp),
+                      ),
+                      modelName: eventView.label,
+                      selected: index == selectedEventIndex,
+                    ),
+                  );
+                }
+                return Container();
               },
-              separatorBuilder: (_, __) => const Divider(),
+              separatorBuilder: (_, __) =>  Container(),
             ),
           ),
         ),

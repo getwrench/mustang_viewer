@@ -29,11 +29,9 @@ class MemoryService {
     Memory memory = WrenchStore.get<Memory>() ?? Memory();
     Connect connect = WrenchStore.get<Connect>() ?? Connect();
     if (showBusy) {
-      memory = memory.rebuild(
-        (b) => b
-          ..busy = true
-          ..errorMsg = '',
-      );
+      memory = memory.rebuild((b) => b
+        ..busy = true
+        ..errorMsg = '');
     }
     updateState1(memory);
 
@@ -47,6 +45,7 @@ class MemoryService {
           String eventVal = eventData['modelStr'] ?? '{}';
           String encodedEventData = jsonEncode(
               EventView(event.timestamp!, eventVal, eventKey).toJson());
+          memory = WrenchStore.get<Memory>() ?? Memory();
           memory = memory.rebuild(
             (b) => b
               ..targetAppEvents = memory.targetAppEvents
@@ -59,9 +58,15 @@ class MemoryService {
                   .toBuilder()
               ..scroll = true,
           );
-          memory = memory.rebuild((b) => b
-            ..eventData = EventView.fromJson(jsonDecode(encodedEventData)).data
-            ..selectedTimelineModel = (memory.targetAppEvents.length - 1));
+          memory = memory.rebuild(
+            (b) => b
+              ..eventData = memory.selectedModelName == 'All'
+                  ? EventView.fromJson(jsonDecode(encodedEventData)).data
+                  : '{}'
+              ..selectedTimelineModel = memory.selectedModelName == 'All'
+                  ? (memory.targetAppEvents.length - 1)
+                  : -1,
+          );
           updateState1(memory);
         }
       }
@@ -75,6 +80,14 @@ class MemoryService {
 
   void clearCacheAndReload({bool reload = true}) {
     clearMemoizedScreen(reload: reload);
+  }
+
+  void updatedSelectedModel(String? modelName) {
+    Memory memory = WrenchStore.get<Memory>() ?? Memory();
+    memory = memory.rebuild(
+      (b) => b..selectedModelName = modelName,
+    );
+    updateState1(memory);
   }
 
   void setSearchTerm(String term) {
