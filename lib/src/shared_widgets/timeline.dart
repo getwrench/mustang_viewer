@@ -40,7 +40,7 @@ class Timeline extends StatelessWidget {
       );
     }
     List<String> dropdownItems = [
-      'All',
+      AppConstants.all,
     ];
 
     for (String entry in data) {
@@ -109,7 +109,7 @@ class Timeline extends StatelessWidget {
                       selected: index == selectedEventIndex,
                     ),
                   );
-                } else if (selectedModelName == 'All') {
+                } else if (selectedModelName == AppConstants.all) {
                   return ListTile(
                     dense: true,
                     onTap: () => onTap(index),

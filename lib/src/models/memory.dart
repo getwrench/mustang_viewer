@@ -1,5 +1,6 @@
 import 'package:built_collection/built_collection.dart';
 import 'package:mustang_core/mustang_core.dart';
+import 'package:mustang_viewer/src/utils/app_constants.dart';
 
 @appModel
 class $Memory {
@@ -39,6 +40,12 @@ class $Memory {
   @InitField('')
   late String searchTerm;
 
-  @InitField('All')
+  @InitField({})
+  late BuiltMap<int, int> highlightIndices;
+
+  @InitField(0)
+  late int indexOfSelectedHighlight;
+
+  @InitField(AppConstants.all)
   late String selectedModelName;
 }
