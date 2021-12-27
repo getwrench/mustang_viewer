@@ -39,8 +39,8 @@ class $Memory {
   @InitField('')
   late String searchTerm;
 
-  @InitField({})
-  late BuiltMap<int, int> highlightIndices;
+  @InitField([])
+  late BuiltList<int> highlightIndices;
 
   @InitField(0)
   late int indexOfSelectedHighlight;
