@@ -23,7 +23,7 @@ class DataView extends StatelessWidget {
   final String searchText;
   final void Function(String term) onSearchTermChange;
   final ScrollController scrollController;
-  final Map<int, int> highlightIndices;
+  final List<int> highlightIndices;
   final int indexOfSelectedHighlight;
   final void Function(int index) updateSelectedIndex;
 
@@ -77,12 +77,12 @@ class DataView extends StatelessWidget {
               decoration: InputDecoration(
                 border: const OutlineInputBorder(),
                 hintText: AppConstants.search,
-                suffixIcon: (highlightIndices.entries.isNotEmpty)
+                suffixIcon: (highlightIndices.isNotEmpty)
                     ? Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           Text(
-                              '${highlightIndices.entries.length} ${AppConstants.found}'),
+                              '${highlightIndices.length} ${AppConstants.found}'),
                           IconButton(
                             onPressed: () {
                               updateSelectedIndex(indexOfSelectedHighlight + 1);
@@ -122,6 +122,7 @@ class DataView extends StatelessWidget {
                           text: highlightSearchTerm(
                             highlightIndices,
                             prettyJson(jsonDecode(text)),
+                            searchText,
                             highlightKeys,
                           ),
                         ),
@@ -138,8 +139,9 @@ class DataView extends StatelessWidget {
   }
 
   TextSpan highlightSearchTerm(
-    Map<int, int> highlightIndices,
+    List<int> highlightIndices,
     String stringToBeSearched,
+    String searchTerm,
     List<GlobalKey> highlightKeys,
   ) {
     const TextStyle _posRes = TextStyle(
@@ -150,17 +152,17 @@ class DataView extends StatelessWidget {
       color: Colors.white,
       backgroundColor: Colors.transparent,
     );
-    if (highlightIndices.entries.isEmpty) {
+    if (highlightIndices.isEmpty) {
       return TextSpan(text: stringToBeSearched, style: _negRes);
     }
 
     List<TextSpan> highlights = [];
-    for (int i = 0; i < highlightIndices.entries.length - 1; i++) {
+    for (int i = 0; i < highlightIndices.length - 1; i++) {
       highlights.addAll([
         TextSpan(
           text: stringToBeSearched.substring(
-            highlightIndices.entries.toList()[i].key,
-            highlightIndices.entries.toList()[i].value,
+            highlightIndices.toList()[i],
+            highlightIndices.toList()[i] + searchTerm.length,
           ),
           children: [
             WidgetSpan(
@@ -174,8 +176,8 @@ class DataView extends StatelessWidget {
         ),
         TextSpan(
           text: stringToBeSearched.substring(
-            highlightIndices.entries.toList()[i].value,
-            highlightIndices.entries.toList()[i + 1].key,
+            highlightIndices.toList()[i] + searchTerm.length,
+            highlightIndices.toList()[i + 1],
           ),
           style: _negRes,
         ),
@@ -184,14 +186,14 @@ class DataView extends StatelessWidget {
     highlights.addAll([
       TextSpan(
         text: stringToBeSearched.substring(
-          highlightIndices.entries.last.key,
-          highlightIndices.entries.last.value,
+          highlightIndices.last,
+          highlightIndices.last + searchTerm.length,
         ),
         children: [
           WidgetSpan(
             child: SizedBox.fromSize(
               size: Size.zero,
-              key: highlightKeys[highlightIndices.entries.length - 1],
+              key: highlightKeys[highlightIndices.length - 1],
             ),
           )
         ],
@@ -199,7 +201,7 @@ class DataView extends StatelessWidget {
       ),
       TextSpan(
         text: stringToBeSearched.substring(
-          highlightIndices.entries.last.value,
+          highlightIndices.last + searchTerm.length,
           stringToBeSearched.length,
         ),
         style: _negRes,
@@ -209,7 +211,7 @@ class DataView extends StatelessWidget {
       style: _negRes,
       text: stringToBeSearched.substring(
         0,
-        highlightIndices.entries.first.key,
+        highlightIndices.first,
       ),
       children: highlights,
     );
