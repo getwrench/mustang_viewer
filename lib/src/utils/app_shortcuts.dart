@@ -2,30 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 class AppShortcuts {
-  static final LogicalKeySet _arrowUp = LogicalKeySet(
+  static SingleActivator arrowUp = const SingleActivator(
     LogicalKeyboardKey.arrowUp,
   );
-  static final LogicalKeySet _arrowDown = LogicalKeySet(
+  static SingleActivator arrowDown = const SingleActivator(
     LogicalKeyboardKey.arrowDown,
   );
-  static final LogicalKeySet _arrowLeft = LogicalKeySet(
+  static SingleActivator arrowLeft = const SingleActivator(
     LogicalKeyboardKey.arrowLeft,
   );
-  static final LogicalKeySet _arrowRight = LogicalKeySet(
+  static SingleActivator arrowRight = const SingleActivator(
     LogicalKeyboardKey.arrowRight,
   );
-
-  static Map<ShortcutActivator, Intent> getShortCuts() {
-    return {
-      _arrowUp: ArrowUpKeyPressIntent(),
-      _arrowDown: ArrowDownKeyPressIntent(),
-      _arrowLeft: ArrowLeftKeyPressIntent(),
-      _arrowRight: ArrowRightKeyPressIntent(),
-    };
-  }
 }
-
-class ArrowUpKeyPressIntent extends Intent {}
-class ArrowDownKeyPressIntent extends Intent {}
-class ArrowLeftKeyPressIntent extends Intent {}
-class ArrowRightKeyPressIntent extends Intent {}

@@ -2,6 +2,8 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:mustang_viewer/src/utils/next_search_result_intent.dart';
+import 'package:mustang_viewer/src/utils/previous_search_result_intent.dart';
 import 'package:mustang_viewer/src/utils/app_constants.dart';
 import 'package:mustang_viewer/src/utils/app_shortcuts.dart';
 import 'package:mustang_viewer/src/utils/app_styles.dart';
@@ -50,13 +52,19 @@ class DataView extends StatelessWidget {
 
     return FocusableActionDetector(
       autofocus: true,
-      shortcuts: AppShortcuts.getShortCuts(),
+      shortcuts: {
+        AppShortcuts.arrowUp: NextSearchResultIntent(indexOfSelectedHighlight),
+        AppShortcuts.arrowDown:
+            PreviousSearchResultIntent(indexOfSelectedHighlight),
+      },
       actions: {
-        ArrowUpKeyPressIntent: CallbackAction(onInvoke: (e) {
-          updateSelectedIndex(indexOfSelectedHighlight - 1);
+        NextSearchResultIntent: CallbackAction(onInvoke: (Intent e) {
+          e = e as NextSearchResultIntent;
+          updateSelectedIndex(e.nextIndex);
         }),
-        ArrowDownKeyPressIntent: CallbackAction(onInvoke: (e) {
-          updateSelectedIndex(indexOfSelectedHighlight + 1);
+        PreviousSearchResultIntent: CallbackAction(onInvoke: (Intent e) {
+          e = e as PreviousSearchResultIntent;
+          updateSelectedIndex(e.previousIndex);
         }),
       },
       child: Column(
@@ -77,7 +85,8 @@ class DataView extends StatelessWidget {
               decoration: InputDecoration(
                 border: const OutlineInputBorder(),
                 hintText: AppConstants.search,
-                suffixIcon: (highlightIndices.isNotEmpty)
+                suffixIcon: (highlightIndices.isNotEmpty &&
+                        searchText.isNotEmpty)
                     ? Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
