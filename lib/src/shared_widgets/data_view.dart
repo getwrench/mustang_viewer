@@ -2,6 +2,8 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:mustang_viewer/src/screens/memory/next_search_index_action.dart';
+import 'package:mustang_viewer/src/screens/memory/previous_search_index_action.dart';
 import 'package:mustang_viewer/src/utils/next_search_result_intent.dart';
 import 'package:mustang_viewer/src/utils/previous_search_result_intent.dart';
 import 'package:mustang_viewer/src/utils/app_constants.dart';
@@ -17,7 +19,9 @@ class DataView extends StatelessWidget {
     this.scrollController,
     this.highlightIndices,
     this.indexOfSelectedHighlight,
-    this.updateSelectedIndex, {
+    this.updateSelectedIndex,
+    this.nextSearchIndexAction,
+    this.previousSearchIndexAction, {
     Key? key,
   }) : super(key: key);
 
@@ -28,6 +32,8 @@ class DataView extends StatelessWidget {
   final List<int> highlightIndices;
   final int indexOfSelectedHighlight;
   final void Function(int index) updateSelectedIndex;
+  final NextSearchIndexAction nextSearchIndexAction;
+  final PreviousSearchIndexAction previousSearchIndexAction;
 
   @override
   Widget build(BuildContext context) {
@@ -58,14 +64,8 @@ class DataView extends StatelessWidget {
             PreviousSearchResultIntent(indexOfSelectedHighlight),
       },
       actions: {
-        NextSearchResultIntent: CallbackAction(onInvoke: (Intent e) {
-          e = e as NextSearchResultIntent;
-          updateSelectedIndex(e.nextIndex);
-        }),
-        PreviousSearchResultIntent: CallbackAction(onInvoke: (Intent e) {
-          e = e as PreviousSearchResultIntent;
-          updateSelectedIndex(e.previousIndex);
-        }),
+        NextSearchResultIntent: nextSearchIndexAction,
+        PreviousSearchResultIntent: previousSearchIndexAction,
       },
       child: Column(
         children: [
