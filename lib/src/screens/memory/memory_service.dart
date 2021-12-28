@@ -106,6 +106,8 @@ class MemoryService {
           ..eventData = eventView.data
           ..selectedAppStateModel = modelName
           ..selectedTimelineModel = -1
+          ..highlightIndices = ListBuilder([])
+          ..searchTerm = ''
           ..scroll = false,
       );
       updateState1(memory);
@@ -114,9 +116,11 @@ class MemoryService {
 
   void updateSelectedHighlight(int index) {
     Memory memory = WrenchStore.get<Memory>() ?? Memory();
-    if(memory.highlightIndices.isNotEmpty) {
+    if (memory.highlightIndices.isNotEmpty) {
       if ((memory.highlightIndices.length > index) && (index) >= 0) {
-        memory = memory.rebuild((b) => b..indexOfSelectedHighlight = index);
+        memory = memory.rebuild(
+          (b) => b..indexOfSelectedHighlight = index,
+        );
         updateState1(memory);
       }
     }
@@ -131,6 +135,8 @@ class MemoryService {
         ..eventData = eventView.data
         ..selectedAppStateModel = ''
         ..selectedTimelineModel = eventIndex
+        ..highlightIndices = ListBuilder([])
+        ..searchTerm = ''
         ..scroll = false,
     );
     updateState1(memory);
