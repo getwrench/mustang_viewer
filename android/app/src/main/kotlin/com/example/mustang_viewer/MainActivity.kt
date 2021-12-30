@@ -1,4 +1,4 @@
-package com.example.mustang_viewer
+package com.wrench.mustang_viewer
 
 import io.flutter.embedding.android.FlutterActivity
 

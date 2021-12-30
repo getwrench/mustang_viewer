@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.mustang_viewer">
+    package="com.wrench.mustang_viewer">
    <application
         android:label="mustang_viewer"
         android:name="${applicationName}"

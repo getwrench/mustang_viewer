@@ -1,0 +1,8 @@
+{
+    "title": "Mustang_Viewer",
+    "icon": "app.icns",
+    "contents": [
+      { "x": 448, "y": 344, "type": "link", "path": "/Users/navaganeshraju/Desktop/projectWorkspace/mustang_viewer/installer/macos" },
+      { "x": 192, "y": 344, "type": "file", "path": "mustang_viewer.app" }
+    ]
+  }
