@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:mustang_core/mustang_widgets.dart';
+import 'package:mustang_viewer/src/screens/memory/next_search_index_action.dart';
+import 'package:mustang_viewer/src/screens/memory/previous_search_index_action.dart';
 import 'package:mustang_viewer/src/shared_widgets/app_progress_indicator.dart';
 import 'package:mustang_viewer/src/shared_widgets/current_state.dart';
 import 'package:mustang_viewer/src/shared_widgets/data_view.dart';
@@ -132,9 +134,11 @@ class MemoryScreen extends StatelessWidget {
                   state.memory.searchTerm,
                   MemoryService().setSearchTerm,
                   dataViewScrollController,
-                  state.memory.highlightIndices.toMap(),
+                  state.memory.highlightIndices.toList(),
                   state.memory.indexOfSelectedHighlight,
                   MemoryService().updateSelectedHighlight,
+                  NextSearchIndexAction(),
+                  PreviousSearchIndexAction(),
                 ),
               ),
             ),

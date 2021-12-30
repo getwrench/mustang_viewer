@@ -2,7 +2,12 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:mustang_viewer/src/screens/memory/next_search_index_action.dart';
+import 'package:mustang_viewer/src/screens/memory/previous_search_index_action.dart';
+import 'package:mustang_viewer/src/utils/next_search_result_intent.dart';
+import 'package:mustang_viewer/src/utils/previous_search_result_intent.dart';
 import 'package:mustang_viewer/src/utils/app_constants.dart';
+import 'package:mustang_viewer/src/utils/app_shortcuts.dart';
 import 'package:mustang_viewer/src/utils/app_styles.dart';
 import 'package:pretty_json/pretty_json.dart';
 
@@ -14,7 +19,9 @@ class DataView extends StatelessWidget {
     this.scrollController,
     this.highlightIndices,
     this.indexOfSelectedHighlight,
-    this.updateSelectedIndex, {
+    this.updateSelectedIndex,
+    this.nextSearchIndexAction,
+    this.previousSearchIndexAction, {
     Key? key,
   }) : super(key: key);
 
@@ -22,9 +29,11 @@ class DataView extends StatelessWidget {
   final String searchText;
   final void Function(String term) onSearchTermChange;
   final ScrollController scrollController;
-  final Map<int, int> highlightIndices;
+  final List<int> highlightIndices;
   final int indexOfSelectedHighlight;
   final void Function(int index) updateSelectedIndex;
+  final NextSearchIndexAction nextSearchIndexAction;
+  final PreviousSearchIndexAction previousSearchIndexAction;
 
   @override
   Widget build(BuildContext context) {
@@ -47,86 +56,101 @@ class DataView extends StatelessWidget {
       },
     );
 
-    return Column(
-      children: [
-        const Padding(
-          padding: EdgeInsets.all(AppStyles.padding8),
-          child: Text(
-            AppConstants.dataView,
-            style: TextStyle(
-              color: Colors.grey,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-        ),
-        Padding(
-          padding: const EdgeInsets.all(AppStyles.padding8),
-          child: TextField(
-            decoration: InputDecoration(
-              border: const OutlineInputBorder(),
-              hintText: AppConstants.search,
-              suffixIcon: (highlightIndices.entries.isNotEmpty)
-                  ? Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Text(
-                            '${highlightIndices.entries.length} ${AppConstants.found}'),
-                        IconButton(
-                          onPressed: () {
-                            updateSelectedIndex(indexOfSelectedHighlight + 1);
-                          },
-                          icon: const Icon(
-                            Icons.arrow_downward,
-                          ),
-                        ),
-                        IconButton(
-                          onPressed: () {
-                            updateSelectedIndex(indexOfSelectedHighlight - 1);
-                          },
-                          icon: const Icon(
-                            Icons.arrow_upward,
-                          ),
-                        ),
-                      ],
-                    )
-                  : null,
-            ),
-            onChanged: onSearchTermChange,
-          ),
-        ),
-        Expanded(
-          child: Scrollbar(
-            isAlwaysShown: true,
-            controller: scrollController,
-            child: SingleChildScrollView(
-              controller: scrollController,
-              child: Padding(
-                padding: const EdgeInsets.all(AppStyles.padding8),
-                child: Row(
-                  children: [
-                    Flexible(
-                      child: RichText(
-                        textScaleFactor: AppStyles.dataTextScaleFactor,
-                        text: highlightSearchTerm(
-                          highlightIndices,
-                          prettyJson(jsonDecode(text)),
-                          highlightKeys,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
+    return FocusableActionDetector(
+      autofocus: true,
+      shortcuts: {
+        AppShortcuts.arrowUp: NextSearchResultIntent(indexOfSelectedHighlight),
+        AppShortcuts.arrowDown:
+            PreviousSearchResultIntent(indexOfSelectedHighlight),
+      },
+      actions: {
+        NextSearchResultIntent: nextSearchIndexAction,
+        PreviousSearchResultIntent: previousSearchIndexAction,
+      },
+      child: Column(
+        children: [
+          const Padding(
+            padding: EdgeInsets.all(AppStyles.padding8),
+            child: Text(
+              AppConstants.dataView,
+              style: TextStyle(
+                color: Colors.grey,
+                fontWeight: FontWeight.bold,
               ),
             ),
           ),
-        )
-      ],
+          Padding(
+            padding: const EdgeInsets.all(AppStyles.padding8),
+            child: TextField(
+              decoration: InputDecoration(
+                border: const OutlineInputBorder(),
+                hintText: AppConstants.search,
+                suffixIcon: (highlightIndices.isNotEmpty &&
+                        searchText.isNotEmpty)
+                    ? Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(
+                              '${highlightIndices.length} ${AppConstants.found}'),
+                          IconButton(
+                            onPressed: () {
+                              updateSelectedIndex(indexOfSelectedHighlight + 1);
+                            },
+                            icon: const Icon(
+                              Icons.arrow_downward,
+                            ),
+                          ),
+                          IconButton(
+                            onPressed: () {
+                              updateSelectedIndex(indexOfSelectedHighlight - 1);
+                            },
+                            icon: const Icon(
+                              Icons.arrow_upward,
+                            ),
+                          ),
+                        ],
+                      )
+                    : null,
+              ),
+              onChanged: onSearchTermChange,
+            ),
+          ),
+          Expanded(
+            child: Scrollbar(
+              isAlwaysShown: true,
+              controller: scrollController,
+              child: SingleChildScrollView(
+                controller: scrollController,
+                child: Padding(
+                  padding: const EdgeInsets.all(AppStyles.padding8),
+                  child: Row(
+                    children: [
+                      Flexible(
+                        child: RichText(
+                          textScaleFactor: AppStyles.dataTextScaleFactor,
+                          text: highlightSearchTerm(
+                            highlightIndices,
+                            prettyJson(jsonDecode(text)),
+                            searchText,
+                            highlightKeys,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          )
+        ],
+      ),
     );
   }
 
   TextSpan highlightSearchTerm(
-    Map<int, int> highlightIndices,
+    List<int> highlightIndices,
     String stringToBeSearched,
+    String searchTerm,
     List<GlobalKey> highlightKeys,
   ) {
     const TextStyle _posRes = TextStyle(
@@ -137,17 +161,17 @@ class DataView extends StatelessWidget {
       color: Colors.white,
       backgroundColor: Colors.transparent,
     );
-    if (highlightIndices.entries.isEmpty) {
+    if (highlightIndices.isEmpty) {
       return TextSpan(text: stringToBeSearched, style: _negRes);
     }
 
     List<TextSpan> highlights = [];
-    for (int i = 0; i < highlightIndices.entries.length - 1; i++) {
+    for (int i = 0; i < highlightIndices.length - 1; i++) {
       highlights.addAll([
         TextSpan(
           text: stringToBeSearched.substring(
-            highlightIndices.entries.toList()[i].key,
-            highlightIndices.entries.toList()[i].value,
+            highlightIndices.toList()[i],
+            highlightIndices.toList()[i] + searchTerm.length,
           ),
           children: [
             WidgetSpan(
@@ -161,8 +185,8 @@ class DataView extends StatelessWidget {
         ),
         TextSpan(
           text: stringToBeSearched.substring(
-            highlightIndices.entries.toList()[i].value,
-            highlightIndices.entries.toList()[i + 1].key,
+            highlightIndices.toList()[i] + searchTerm.length,
+            highlightIndices.toList()[i + 1],
           ),
           style: _negRes,
         ),
@@ -171,14 +195,14 @@ class DataView extends StatelessWidget {
     highlights.addAll([
       TextSpan(
         text: stringToBeSearched.substring(
-          highlightIndices.entries.last.key,
-          highlightIndices.entries.last.value,
+          highlightIndices.last,
+          highlightIndices.last + searchTerm.length,
         ),
         children: [
           WidgetSpan(
             child: SizedBox.fromSize(
               size: Size.zero,
-              key: highlightKeys[highlightIndices.entries.length - 1],
+              key: highlightKeys[highlightIndices.length - 1],
             ),
           )
         ],
@@ -186,7 +210,7 @@ class DataView extends StatelessWidget {
       ),
       TextSpan(
         text: stringToBeSearched.substring(
-          highlightIndices.entries.last.value,
+          highlightIndices.last + searchTerm.length,
           stringToBeSearched.length,
         ),
         style: _negRes,
@@ -196,7 +220,7 @@ class DataView extends StatelessWidget {
       style: _negRes,
       text: stringToBeSearched.substring(
         0,
-        highlightIndices.entries.first.key,
+        highlightIndices.first,
       ),
       children: highlights,
     );
