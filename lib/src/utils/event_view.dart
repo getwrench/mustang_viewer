@@ -1,26 +1,31 @@
 class EventView {
-  const EventView(
-    this.timestamp,
-    this.data,
-    this.label,
-  );
+  const EventView({
+    required this.timestamp,
+    required this.modelName,
+    required this.modelData,
+  });
+
+  static const String _timestamp = 'timestamp';
+  static const String _modelName = 'modelName';
+  static const String _modelData = 'modelData';
 
   static EventView fromJson(Map<String, dynamic> json) {
-    int ts = json['timestamp'] ?? 0;
-    String data = json['data'] ?? '{}';
-    String label = json['label'] ?? 'N/A';
-    return EventView(ts, data, label);
+    return EventView(
+      timestamp: json[_timestamp] ?? 0,
+      modelName: json[_modelName] ?? '{}',
+      modelData: json[_modelData] ?? 'N/A',
+    );
   }
 
   Map<String, dynamic> toJson() {
     return {
-      'timestamp': timestamp,
-      'data': data,
-      'label': label,
+      _timestamp: timestamp,
+      _modelName: modelName,
+      _modelData: modelData,
     };
   }
 
   final int timestamp;
-  final String data;
-  final String label;
+  final String modelName;
+  final String modelData;
 }

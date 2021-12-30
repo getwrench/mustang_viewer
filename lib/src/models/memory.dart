@@ -19,35 +19,35 @@ class $Memory {
   late bool clearScreenCache;
 
   @InitField({})
-  late BuiltMap<String, String> targetAppState;
+  late BuiltMap<String, String> appState;
 
   @InitField([])
-  late BuiltList<String> targetAppEvents;
+  late BuiltList<String> appEvents;
 
   @InitField([])
-  late BuiltList<String> searchTargetAppEvents;
+  late BuiltList<String> filteredAppEvents;
 
   @InitField('{}')
-  late String eventData;
+  late String modelData;
 
   @InitField('')
   late String selectedAppStateModel;
 
   @InitField(-1)
-  late int selectedTimelineModel;
+  late int selectedAppEventIndex;
 
   @InitField(true)
   late bool scroll;
 
   @InitField('')
-  late String searchTerm;
+  late String modelDataSearchText;
 
   @InitField([])
-  late BuiltList<int> highlightIndices;
+  late BuiltList<int> modelDataSearchTextIndices;
 
   @InitField(0)
-  late int indexOfSelectedHighlight;
+  late int selectedModelDataSearchTextIndex;
 
   @InitField('')
-  late String selectedModelName;
+  late String selectedAppEventName;
 }

@@ -14,6 +14,9 @@ import 'package:vm_service/vm_service.dart';
 
 @ScreenService(screenState: $MemoryState)
 class MemoryService {
+  static const String _appEventModelNameKey = 'modelName';
+  static const String _appEventModelDataKey = 'modelStr';
+
   Future<void> memoizedSubscribe() {
     Memory memory = WrenchStore.get<Memory>() ?? Memory();
     if (memory.clearScreenCache) {
@@ -46,41 +49,47 @@ class MemoryService {
       await for (Event event in eventStream) {
         if (event.extensionKind == AppConstants.eventExtension) {
           Map<String, dynamic> eventData = event.extensionData?.data ?? {};
-          String eventKey = eventData['modelName'] ?? 'N/A';
-          String eventVal = eventData['modelStr'] ?? '{}';
-          String encodedEventData = jsonEncode(
-              EventView(event.timestamp!, eventVal, eventKey).toJson());
+          String modelName = eventData[_appEventModelNameKey] ?? 'N/A';
+          String modelData = eventData[_appEventModelDataKey] ?? '{}';
+          String encodedEventData = jsonEncode(EventView(
+            timestamp: event.timestamp!,
+            modelName: modelName,
+            modelData: modelData,
+          ).toJson());
           memory = WrenchStore.get<Memory>() ?? Memory();
           memory = memory.rebuild(
             (b) => b
-              ..targetAppEvents = memory.targetAppEvents
+              ..appEvents = memory.appEvents
                   .rebuild((b) => b.add(encodedEventData))
                   .toBuilder()
-              ..targetAppState = memory.targetAppState
+              ..appState = memory.appState
                   .rebuild((b) => b.updateValue(
-                      eventKey, (_) => encodedEventData,
+                      modelName, (_) => encodedEventData,
                       ifAbsent: () => encodedEventData))
                   .toBuilder()
               ..scroll = true,
           );
 
-          List<String> targetEvents = memory.targetAppEvents.toList();
+          List<String> targetEvents = memory.appEvents.toList();
           List<String> searchedTargetEvent = [];
           for (String event in targetEvents) {
             EventView eventView = EventView.fromJson(jsonDecode(event));
-            if (eventView.label.toLowerCase().contains(memory.searchTerm)) {
+            if (eventView.modelName
+                .toLowerCase()
+                .contains(memory.modelDataSearchText)) {
               searchedTargetEvent.add(event);
             }
           }
           String eventDataString =
-              EventView.fromJson(jsonDecode(searchedTargetEvent.last)).data;
+              EventView.fromJson(jsonDecode(searchedTargetEvent.last))
+                  .modelData;
           int indexOfLastEvent = (searchedTargetEvent.length - 1);
 
           memory = memory.rebuild(
             (b) => b
-              ..eventData = eventDataString
-              ..searchTargetAppEvents = ListBuilder<String>(searchedTargetEvent)
-              ..selectedTimelineModel = indexOfLastEvent,
+              ..modelData = eventDataString
+              ..filteredAppEvents = ListBuilder<String>(searchedTargetEvent)
+              ..selectedAppEventIndex = indexOfLastEvent,
           );
           updateState1(memory);
         }
@@ -99,55 +108,55 @@ class MemoryService {
 
   void updatedSelectedModel(String? modelName) {
     Memory memory = WrenchStore.get<Memory>() ?? Memory();
-    List<String> targetEvents = memory.targetAppEvents.toList();
+    List<String> targetEvents = memory.appEvents.toList();
     List<String> searchedTargetEvent = [];
     for (String event in targetEvents) {
       EventView eventView = EventView.fromJson(jsonDecode(event));
-      if (eventView.label.toLowerCase().contains(modelName ?? '')) {
+      if (eventView.modelName.toLowerCase().contains(modelName ?? '')) {
         searchedTargetEvent.add(event);
       }
     }
     String eventDataString =
-        EventView.fromJson(jsonDecode(searchedTargetEvent.last)).data;
+        EventView.fromJson(jsonDecode(searchedTargetEvent.last)).modelData;
     int indexOfLastEvent = (searchedTargetEvent.length - 1);
     memory = memory.rebuild(
       (b) => b
-        ..selectedModelName = modelName
-        ..searchTargetAppEvents = ListBuilder<String>(searchedTargetEvent)
-        ..eventData = eventDataString
-        ..selectedTimelineModel = indexOfLastEvent,
+        ..selectedAppEventName = modelName
+        ..filteredAppEvents = ListBuilder<String>(searchedTargetEvent)
+        ..modelData = eventDataString
+        ..selectedAppEventIndex = indexOfLastEvent,
     );
     updateState1(memory);
   }
 
   void setSearchTerm(String term) {
     Memory memory = WrenchStore.get<Memory>() ?? Memory();
-    String prettyEventData = prettyJson(jsonDecode(memory.eventData));
+    String prettyEventData = prettyJson(jsonDecode(memory.modelData));
     List<int> highlightIndices = AppTextHighlighter.findHighlights(
       prettyEventData.toLowerCase(),
       term.toLowerCase(),
     );
     memory = memory.rebuild(
       (b) => b
-        ..searchTerm = term
-        ..indexOfSelectedHighlight = 0
-        ..highlightIndices = ListBuilder<int>(highlightIndices),
+        ..modelDataSearchText = term
+        ..selectedModelDataSearchTextIndex = 0
+        ..modelDataSearchTextIndices = ListBuilder<int>(highlightIndices),
     );
     updateState1(memory);
   }
 
   void showEventDataByModelName(String modelName) {
     Memory memory = WrenchStore.get<Memory>() ?? Memory();
-    if (memory.targetAppState.toMap().containsKey(modelName)) {
+    if (memory.appState.toMap().containsKey(modelName)) {
       EventView eventView =
-          EventView.fromJson(jsonDecode(memory.targetAppState[modelName]!));
+          EventView.fromJson(jsonDecode(memory.appState[modelName]!));
       memory = memory.rebuild(
         (b) => b
-          ..eventData = eventView.data
+          ..modelData = eventView.modelData
           ..selectedAppStateModel = modelName
-          ..selectedTimelineModel = -1
-          ..highlightIndices = ListBuilder([])
-          ..searchTerm = ''
+          ..selectedAppEventIndex = -1
+          ..modelDataSearchTextIndices = ListBuilder([])
+          ..modelDataSearchText = ''
           ..scroll = false,
       );
       updateState1(memory);
@@ -156,10 +165,10 @@ class MemoryService {
 
   void updateSelectedHighlight(int index) {
     Memory memory = WrenchStore.get<Memory>() ?? Memory();
-    if (memory.highlightIndices.isNotEmpty) {
-      if ((memory.highlightIndices.length > index) && (index) >= 0) {
+    if (memory.modelDataSearchTextIndices.isNotEmpty) {
+      if ((memory.modelDataSearchTextIndices.length > index) && (index) >= 0) {
         memory = memory.rebuild(
-          (b) => b..indexOfSelectedHighlight = index,
+          (b) => b..selectedModelDataSearchTextIndex = index,
         );
         updateState1(memory);
       }
@@ -168,15 +177,15 @@ class MemoryService {
 
   void showEventDataByEventIndex(int eventIndex) {
     Memory memory = WrenchStore.get<Memory>() ?? Memory();
-    String eventData = memory.targetAppEvents.toList().elementAt(eventIndex);
+    String eventData = memory.appEvents.toList().elementAt(eventIndex);
     EventView eventView = EventView.fromJson(jsonDecode(eventData));
     memory = memory.rebuild(
       (b) => b
-        ..eventData = eventView.data
+        ..modelData = eventView.modelData
         ..selectedAppStateModel = ''
-        ..selectedTimelineModel = eventIndex
-        ..highlightIndices = ListBuilder([])
-        ..searchTerm = ''
+        ..selectedAppEventIndex = eventIndex
+        ..modelDataSearchTextIndices = ListBuilder([])
+        ..modelDataSearchText = ''
         ..scroll = false,
     );
     updateState1(memory);
