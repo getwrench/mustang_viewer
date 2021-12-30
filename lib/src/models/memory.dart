@@ -24,6 +24,9 @@ class $Memory {
   @InitField([])
   late BuiltList<String> targetAppEvents;
 
+  @InitField([])
+  late BuiltList<String> searchTargetAppEvents;
+
   @InitField('{}')
   late String eventData;
 
@@ -44,4 +47,7 @@ class $Memory {
 
   @InitField(0)
   late int indexOfSelectedHighlight;
+
+  @InitField('')
+  late String selectedModelName;
 }

@@ -14,7 +14,9 @@ class Timeline extends StatelessWidget {
     this.onTap,
     this.scrollController,
     this.selectedEventIndex,
-    this.scroll, {
+    this.scroll,
+    this.onDropdownChange,
+    this.selectedModelName, {
     Key? key,
   }) : super(key: key);
 
@@ -23,6 +25,8 @@ class Timeline extends StatelessWidget {
   final ScrollController scrollController;
   final int selectedEventIndex;
   final bool scroll;
+  final void Function(String?) onDropdownChange;
+  final String selectedModelName;
 
   @override
   Widget build(BuildContext context) {
@@ -35,6 +39,7 @@ class Timeline extends StatelessWidget {
         ),
       );
     }
+
     return Column(
       children: [
         const Padding(
@@ -44,6 +49,21 @@ class Timeline extends StatelessWidget {
             style: TextStyle(
               color: Colors.grey,
               fontWeight: FontWeight.bold,
+            ),
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.symmetric(
+            horizontal: AppStyles.padding8,
+          ),
+          child: SizedBox(
+            width: MediaQuery.of(context).size.width,
+            child: TextFormField(
+              decoration: const InputDecoration(
+                border: OutlineInputBorder(),
+                hintText: AppConstants.search,
+              ),
+              onChanged: onDropdownChange,
             ),
           ),
         ),

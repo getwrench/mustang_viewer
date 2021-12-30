@@ -50,6 +50,7 @@ class MemoryService {
           String eventVal = eventData['modelStr'] ?? '{}';
           String encodedEventData = jsonEncode(
               EventView(event.timestamp!, eventVal, eventKey).toJson());
+          memory = WrenchStore.get<Memory>() ?? Memory();
           memory = memory.rebuild(
             (b) => b
               ..targetAppEvents = memory.targetAppEvents
@@ -62,9 +63,25 @@ class MemoryService {
                   .toBuilder()
               ..scroll = true,
           );
-          memory = memory.rebuild((b) => b
-            ..eventData = EventView.fromJson(jsonDecode(encodedEventData)).data
-            ..selectedTimelineModel = (memory.targetAppEvents.length - 1));
+
+          List<String> targetEvents = memory.targetAppEvents.toList();
+          List<String> searchedTargetEvent = [];
+          for (String event in targetEvents) {
+            EventView eventView = EventView.fromJson(jsonDecode(event));
+            if (eventView.label.toLowerCase().contains(memory.searchTerm)) {
+              searchedTargetEvent.add(event);
+            }
+          }
+          String eventDataString =
+              EventView.fromJson(jsonDecode(searchedTargetEvent.last)).data;
+          int indexOfLastEvent = (searchedTargetEvent.length - 1);
+
+          memory = memory.rebuild(
+            (b) => b
+              ..eventData = eventDataString
+              ..searchTargetAppEvents = ListBuilder<String>(searchedTargetEvent)
+              ..selectedTimelineModel = indexOfLastEvent,
+          );
           updateState1(memory);
         }
       }
@@ -78,6 +95,29 @@ class MemoryService {
 
   void clearCacheAndReload({bool reload = true}) {
     clearMemoizedScreen(reload: reload);
+  }
+
+  void updatedSelectedModel(String? modelName) {
+    Memory memory = WrenchStore.get<Memory>() ?? Memory();
+    List<String> targetEvents = memory.targetAppEvents.toList();
+    List<String> searchedTargetEvent = [];
+    for (String event in targetEvents) {
+      EventView eventView = EventView.fromJson(jsonDecode(event));
+      if (eventView.label.toLowerCase().contains(modelName ?? '')) {
+        searchedTargetEvent.add(event);
+      }
+    }
+    String eventDataString =
+        EventView.fromJson(jsonDecode(searchedTargetEvent.last)).data;
+    int indexOfLastEvent = (searchedTargetEvent.length - 1);
+    memory = memory.rebuild(
+      (b) => b
+        ..selectedModelName = modelName
+        ..searchTargetAppEvents = ListBuilder<String>(searchedTargetEvent)
+        ..eventData = eventDataString
+        ..selectedTimelineModel = indexOfLastEvent,
+    );
+    updateState1(memory);
   }
 
   void setSearchTerm(String term) {
