@@ -64,19 +64,6 @@ class MemoryService {
               ..scroll = true,
           );
 
-          EventView eventView =
-              EventView.fromJson(jsonDecode(encodedEventData));
-          String eventDataString = eventView.data;
-          int indexOfLastEvent = (memory.targetAppEvents.length - 1);
-          if (eventView.label.toLowerCase().contains(memory.searchTerm)) {
-            eventDataString = eventView.data;
-            List<String> targetAppEvents = memory.targetAppEvents.toList();
-            indexOfLastEvent = targetAppEvents.lastIndexWhere((element) {
-              eventView = EventView.fromJson(jsonDecode(element));
-              return eventView.label.toLowerCase().contains(memory.searchTerm);
-            });
-          }
-
           List<String> targetEvents = memory.targetAppEvents.toList();
           List<String> searchedTargetEvent = [];
           for (String event in targetEvents) {
@@ -85,6 +72,9 @@ class MemoryService {
               searchedTargetEvent.add(event);
             }
           }
+          String eventDataString =
+              EventView.fromJson(jsonDecode(searchedTargetEvent.last)).data;
+          int indexOfLastEvent = (searchedTargetEvent.length - 1);
 
           memory = memory.rebuild(
             (b) => b
