@@ -1,6 +1,6 @@
 class AppConstants {
   static const String connect = 'Connect';
-  static const String dataView = 'Data';
+  static const String dataView = 'Model data';
   static const String disconnect = 'Disconnect';
   static const String debugServiceUrl = 'Debug service URL';
   static const String eventExtension = 'mustang';
@@ -10,8 +10,8 @@ class AppConstants {
   static const String mustangViewer = 'Mustang Viewer';
   static const String pleaseWait = 'Please wait...';
   static const String unknownError = 'Unknown error';
-  static const String timeline = 'Timeline';
-  static const String liveAppState = 'Live App State';
+  static const String timeline = 'App state timeline';
+  static const String liveAppState = 'App state';
   static const String search = 'Search';
   static const String found = 'Found';
 }
