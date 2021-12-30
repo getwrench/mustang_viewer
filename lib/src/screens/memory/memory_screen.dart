@@ -107,7 +107,7 @@ class MemoryScreen extends StatelessWidget {
                         ),
                       ),
                       child: Timeline(
-                        state.memory.targetAppEvents.toList(),
+                        state.memory.searchTargetAppEvents.toList(),
                         (eventIndex) => MemoryService()
                             .showEventDataByEventIndex(eventIndex),
                         timelineScrollController,

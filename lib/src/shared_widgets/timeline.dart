@@ -39,16 +39,6 @@ class Timeline extends StatelessWidget {
         ),
       );
     }
-    List<String> dropdownItems = [
-      AppConstants.all,
-    ];
-
-    for (String entry in data) {
-      EventView eventView = EventView.fromJson(jsonDecode(entry));
-      if (!dropdownItems.contains(eventView.label)) {
-        dropdownItems.add(eventView.label);
-      }
-    }
 
     return Column(
       children: [
@@ -68,18 +58,10 @@ class Timeline extends StatelessWidget {
           ),
           child: SizedBox(
             width: MediaQuery.of(context).size.width,
-            child: DropdownButtonFormField<String>(
-              items: dropdownItems
-                  .map(
-                    (e) => DropdownMenuItem<String>(
-                      child: Text(e),
-                      value: e,
-                    ),
-                  )
-                  .toList(),
-              value: selectedModelName,
+            child: TextFormField(
               decoration: const InputDecoration(
                 border: OutlineInputBorder(),
+                hintText: AppConstants.search,
               ),
               onChanged: onDropdownChange,
             ),
@@ -95,38 +77,20 @@ class Timeline extends StatelessWidget {
               itemBuilder: (BuildContext context, int index) {
                 EventView eventView =
                     EventView.fromJson(jsonDecode(data[index]));
-                if (selectedModelName == eventView.label) {
-                  return ListTile(
-                    dense: true,
-                    onTap: () => onTap(index),
-                    title: EventText(
-                      rowNum: index + 1,
-                      ts: AppDateTime.timeForDateTime(
-                        DateTime.fromMillisecondsSinceEpoch(
-                            eventView.timestamp),
-                      ),
-                      modelName: eventView.label,
-                      selected: index == selectedEventIndex,
+                return ListTile(
+                  dense: true,
+                  onTap: () => onTap(index),
+                  title: EventText(
+                    rowNum: index + 1,
+                    ts: AppDateTime.timeForDateTime(
+                      DateTime.fromMillisecondsSinceEpoch(eventView.timestamp),
                     ),
-                  );
-                } else if (selectedModelName == AppConstants.all) {
-                  return ListTile(
-                    dense: true,
-                    onTap: () => onTap(index),
-                    title: EventText(
-                      rowNum: index + 1,
-                      ts: AppDateTime.timeForDateTime(
-                        DateTime.fromMillisecondsSinceEpoch(
-                            eventView.timestamp),
-                      ),
-                      modelName: eventView.label,
-                      selected: index == selectedEventIndex,
-                    ),
-                  );
-                }
-                return Container();
+                    modelName: eventView.label,
+                    selected: index == selectedEventIndex,
+                  ),
+                );
               },
-              separatorBuilder: (_, __) =>  Container(),
+              separatorBuilder: (_, __) => const Divider(),
             ),
           ),
         ),
