@@ -96,7 +96,7 @@ class MemoryScreen extends StatelessWidget {
                         ),
                       ),
                       child: CurrentState(
-                        state.memory.targetAppState.toMap(),
+                        state.memory.appState.toMap(),
                         (modelName) =>
                             MemoryService().showEventDataByModelName(modelName),
                         currentStateScrollController,
@@ -113,12 +113,14 @@ class MemoryScreen extends StatelessWidget {
                         ),
                       ),
                       child: Timeline(
-                        state.memory.targetAppEvents.toList(),
+                        state.memory.filteredAppEvents.toList(),
                         (eventIndex) => MemoryService()
                             .showEventDataByEventIndex(eventIndex),
                         timelineScrollController,
-                        state.memory.selectedTimelineModel,
+                        state.memory.selectedAppEventIndex,
                         state.memory.scroll,
+                        MemoryService().updatedSelectedModel,
+                        state.memory.selectedAppEventName,
                       ),
                     ),
                   ),
@@ -134,12 +136,12 @@ class MemoryScreen extends StatelessWidget {
                   ),
                 ),
                 child: DataView(
-                  state.memory.eventData,
-                  state.memory.searchTerm,
+                  state.memory.modelData,
+                  state.memory.modelDataSearchText,
                   MemoryService().setSearchTerm,
                   dataViewScrollController,
-                  state.memory.highlightIndices.toList(),
-                  state.memory.indexOfSelectedHighlight,
+                  state.memory.modelDataSearchTextIndices.toList(),
+                  state.memory.selectedModelDataSearchTextIndex,
                   MemoryService().updateSelectedHighlight,
                   NextSearchIndexAction(),
                   PreviousSearchIndexAction(),
