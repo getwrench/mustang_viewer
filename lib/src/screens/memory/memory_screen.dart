@@ -3,11 +3,11 @@ import 'package:flutter/scheduler.dart';
 import 'package:mustang_core/mustang_widgets.dart';
 import 'package:mustang_viewer/src/screens/memory/next_search_index_action.dart';
 import 'package:mustang_viewer/src/screens/memory/previous_search_index_action.dart';
+import 'package:mustang_viewer/src/shared_widgets/app_menu.dart';
 import 'package:mustang_viewer/src/shared_widgets/app_progress_indicator.dart';
 import 'package:mustang_viewer/src/shared_widgets/current_state.dart';
 import 'package:mustang_viewer/src/shared_widgets/data_view.dart';
 import 'package:mustang_viewer/src/shared_widgets/timeline.dart';
-import 'package:mustang_viewer/src/utils/app_constants.dart';
 import 'package:mustang_viewer/src/utils/app_routes.dart';
 import 'package:mustang_viewer/src/utils/app_styles.dart';
 import 'package:mustang_viewer/src/utils/dialog_util.dart';
@@ -65,19 +65,17 @@ class MemoryScreen extends StatelessWidget {
     ScrollController dataViewScrollController,
   ) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text(AppConstants.memory),
-        actions: [
-          MaterialButton(
-            onPressed: () => _disconnect(context, state!),
-            child: const Text(AppConstants.disconnect),
-            hoverColor: Theme.of(context).colorScheme.primary,
-          ),
-        ],
-      ),
       body: Center(
         child: Row(
           children: [
+            AppMenu(
+              disconnect: () => _disconnect(
+                context,
+                state!,
+              ),
+              selectedIndex: state!.menu.activeIndex,
+              updateIndex: MemoryService().updateIndex,
+            ),
             Expanded(
               flex: AppStyles.flex4,
               child: Column(
@@ -85,12 +83,20 @@ class MemoryScreen extends StatelessWidget {
                   Expanded(
                     child: DecoratedBox(
                       decoration: BoxDecoration(
-                        border: Border.all(
-                          color: Theme.of(context).colorScheme.primary,
+                        border: Border(
+                          right: BorderSide(
+                            color: Theme.of(context).colorScheme.primary,
+                          ),
+                          bottom: BorderSide(
+                            color: Theme.of(context).colorScheme.primary,
+                          ),
+                          top: BorderSide(
+                            color: Theme.of(context).colorScheme.primary,
+                          ),
                         ),
                       ),
                       child: CurrentState(
-                        state!.memory.targetAppState.toMap(),
+                        state.memory.targetAppState.toMap(),
                         (modelName) =>
                             MemoryService().showEventDataByModelName(modelName),
                         currentStateScrollController,

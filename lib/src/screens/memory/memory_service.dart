@@ -4,6 +4,7 @@ import 'package:built_collection/built_collection.dart';
 import 'package:mustang_core/mustang_core.dart';
 import 'package:mustang_viewer/src/models/connect.model.dart';
 import 'package:mustang_viewer/src/models/memory.model.dart';
+import 'package:mustang_viewer/src/models/menu.model.dart';
 import 'package:mustang_viewer/src/screens/memory/memory_service.service.dart';
 import 'package:mustang_viewer/src/screens/memory/memory_state.dart';
 import 'package:mustang_viewer/src/utils/app_constants.dart';
@@ -124,6 +125,12 @@ class MemoryService {
         updateState1(memory);
       }
     }
+  }
+
+  void updateIndex(int index) {
+    Menu menu = WrenchStore.get<Menu>() ?? Menu();
+    menu = menu.rebuild((b) => b..activeIndex = index);
+    updateState1(menu);
   }
 
   void showEventDataByEventIndex(int eventIndex) {

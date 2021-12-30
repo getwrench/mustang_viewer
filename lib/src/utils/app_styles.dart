@@ -15,6 +15,7 @@ class AppStyles {
   static const double padding10 = 10.0;
   static const double radius4 = 4.0;
   static const double width5 = 5.0;
+  static const double width50 = 50.0;
   static const double width100 = 100.0;
   static const double width300 = 300.0;
   static const double width400 = 400.0;
