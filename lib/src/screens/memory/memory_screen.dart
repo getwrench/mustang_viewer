@@ -3,14 +3,12 @@ import 'package:flutter/scheduler.dart';
 import 'package:mustang_core/mustang_widgets.dart';
 import 'package:mustang_viewer/src/screens/memory/next_search_index_action.dart';
 import 'package:mustang_viewer/src/screens/memory/previous_search_index_action.dart';
-import 'package:mustang_viewer/src/shared_widgets/app_menu.dart';
+import 'package:mustang_viewer/src/screens/side_menu/side_menu_screen.dart';
 import 'package:mustang_viewer/src/shared_widgets/app_progress_indicator.dart';
 import 'package:mustang_viewer/src/shared_widgets/current_state.dart';
 import 'package:mustang_viewer/src/shared_widgets/data_view.dart';
 import 'package:mustang_viewer/src/shared_widgets/timeline.dart';
-import 'package:mustang_viewer/src/utils/app_routes.dart';
 import 'package:mustang_viewer/src/utils/app_styles.dart';
-import 'package:mustang_viewer/src/utils/dialog_util.dart';
 
 import 'memory_service.dart';
 import 'memory_state.state.dart';
@@ -68,14 +66,7 @@ class MemoryScreen extends StatelessWidget {
       body: Center(
         child: Row(
           children: [
-            AppMenu(
-              disconnect: () => _disconnect(
-                context,
-                state!,
-              ),
-              selectedIndex: state!.menu.activeIndex,
-              updateIndex: MemoryService().updateIndex,
-            ),
+            const SideMenuScreen(),
             Expanded(
               flex: AppStyles.flex4,
               child: Column(
@@ -96,7 +87,7 @@ class MemoryScreen extends StatelessWidget {
                         ),
                       ),
                       child: CurrentState(
-                        state.memory.appState.toMap(),
+                        state!.memory.appState.toMap(),
                         (modelName) =>
                             MemoryService().showEventDataByModelName(modelName),
                         currentStateScrollController,
@@ -152,16 +143,5 @@ class MemoryScreen extends StatelessWidget {
         ),
       ),
     );
-  }
-
-  Future<void> _disconnect(BuildContext context, MemoryState state) async {
-    DialogUtil.show(context);
-    await MemoryService().disconnect();
-    Navigator.pop(context);
-    if (state.memory.errorOnEvent.isNotEmpty) {
-      DialogUtil.showMessage(context, state.memory.errorOnEvent);
-    }
-    MemoryService().clearConnectScreen();
-    Navigator.pushReplacementNamed(context, AppRoutes.connect);
   }
 }

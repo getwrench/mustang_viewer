@@ -4,7 +4,6 @@ import 'package:built_collection/built_collection.dart';
 import 'package:mustang_core/mustang_core.dart';
 import 'package:mustang_viewer/src/models/connect.model.dart';
 import 'package:mustang_viewer/src/models/memory.model.dart';
-import 'package:mustang_viewer/src/models/menu.model.dart';
 import 'package:mustang_viewer/src/screens/memory/memory_service.service.dart';
 import 'package:mustang_viewer/src/screens/memory/memory_state.dart';
 import 'package:mustang_viewer/src/utils/app_constants.dart';
@@ -77,7 +76,7 @@ class MemoryService {
             EventView eventView = EventView.fromJson(jsonDecode(event));
             if (eventView.modelName
                 .toLowerCase()
-                .contains(memory.modelDataSearchText)) {
+                .contains(memory.modelDataSearchText.toLowerCase())) {
               searchedTargetEvent.add(event);
             }
           }
@@ -112,7 +111,7 @@ class MemoryService {
     List<String> searchedTargetEvent = [];
     for (String event in targetEvents) {
       EventView eventView = EventView.fromJson(jsonDecode(event));
-      if (eventView.modelName.toLowerCase().contains(modelName ?? '')) {
+      if (eventView.modelName.toLowerCase().contains(modelName?.toLowerCase() ?? '')) {
         searchedTargetEvent.add(event);
       }
     }
@@ -180,12 +179,6 @@ class MemoryService {
     }
   }
 
-  void updateIndex(int index) {
-    Menu menu = WrenchStore.get<Menu>() ?? Menu();
-    menu = menu.rebuild((b) => b..activeIndex = index);
-    updateState1(menu);
-  }
-
   void showEventDataByEventIndex(int eventIndex) {
     Memory memory = WrenchStore.get<Memory>() ?? Memory();
     String eventData = memory.filteredAppEvents.toList().elementAt(eventIndex);
@@ -200,28 +193,5 @@ class MemoryService {
         ..scroll = true,
     );
     updateState1(memory);
-  }
-
-  Future<void> disconnect() async {
-    Connect connect = WrenchStore.get<Connect>() ?? Connect();
-    try {
-      await connect.vmService!.dispose();
-      await connect.vmService!.onDone;
-      connect = connect.rebuild(
-        (b) => b
-          ..vmService = null
-          ..connected = false,
-      );
-    } catch (e) {
-      connect = connect.rebuild(
-        (b) => b..errorOnEvent = '$e',
-      );
-    } finally {
-      updateState1(connect, reload: false);
-    }
-  }
-
-  void clearConnectScreen() {
-    updateState1(Connect(), reload: false);
   }
 }

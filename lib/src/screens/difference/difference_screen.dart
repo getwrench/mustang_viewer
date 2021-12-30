@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mustang_core/mustang_widgets.dart';
 import 'package:flutter/scheduler.dart';
-import 'package:mustang_viewer/src/shared_widgets/app_menu.dart';
-import 'package:mustang_viewer/src/utils/app_routes.dart';
-import 'package:mustang_viewer/src/utils/dialog_util.dart';
+import 'package:mustang_viewer/src/screens/side_menu/side_menu_screen.dart';
 
 import 'difference_state.state.dart';
 import 'difference_service.dart';
@@ -43,11 +41,7 @@ class DifferenceScreen extends StatelessWidget {
       body: Center(
         child: Row(
           children: [
-            AppMenu(
-              disconnect: () => _disconnect(context, state!),
-              selectedIndex: state!.menu.activeIndex,
-              updateIndex: DifferenceService().updateIndex,
-            ),
+            const SideMenuScreen(),
             Expanded(
               child: DecoratedBox(
                 decoration: BoxDecoration(
@@ -62,19 +56,5 @@ class DifferenceScreen extends StatelessWidget {
         ),
       ),
     );
-  }
-
-  Future<void> _disconnect(
-    BuildContext context,
-    DifferenceState state,
-  ) async {
-    DialogUtil.show(context);
-    await DifferenceService().disconnect();
-    Navigator.pop(context);
-    if (state.difference.errorMsgOnEvent.isNotEmpty) {
-      DialogUtil.showMessage(context, state.difference.errorMsgOnEvent);
-    }
-    DifferenceService().clearConnectScreen();
-    Navigator.pushReplacementNamed(context, AppRoutes.connect);
   }
 }
