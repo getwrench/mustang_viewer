@@ -85,7 +85,7 @@ class Timeline extends StatelessWidget {
                     ts: AppDateTime.timeForDateTime(
                       DateTime.fromMillisecondsSinceEpoch(eventView.timestamp),
                     ),
-                    modelName: eventView.label,
+                    modelName: eventView.modelName,
                     selected: index == selectedEventIndex,
                   ),
                 );
