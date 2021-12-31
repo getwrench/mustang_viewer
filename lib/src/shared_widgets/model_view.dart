@@ -11,8 +11,8 @@ import 'package:mustang_viewer/src/utils/app_shortcuts.dart';
 import 'package:mustang_viewer/src/utils/app_styles.dart';
 import 'package:pretty_json/pretty_json.dart';
 
-class DataView extends StatelessWidget {
-  const DataView(
+class ModelView extends StatelessWidget {
+  const ModelView(
     this.text,
     this.searchText,
     this.onSearchTermChange,

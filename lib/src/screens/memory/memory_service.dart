@@ -76,7 +76,7 @@ class MemoryService {
             EventView eventView = EventView.fromJson(jsonDecode(event));
             if (eventView.modelName
                 .toLowerCase()
-                .contains(memory.modelDataSearchText)) {
+                .contains(memory.modelDataSearchText.toLowerCase())) {
               searchedTargetEvent.add(event);
             }
           }
@@ -84,7 +84,6 @@ class MemoryService {
               EventView.fromJson(jsonDecode(searchedTargetEvent.last))
                   .modelData;
           int indexOfLastEvent = (searchedTargetEvent.length - 1);
-
           memory = memory.rebuild(
             (b) => b
               ..modelData = eventDataString
@@ -112,13 +111,18 @@ class MemoryService {
     List<String> searchedTargetEvent = [];
     for (String event in targetEvents) {
       EventView eventView = EventView.fromJson(jsonDecode(event));
-      if (eventView.modelName.toLowerCase().contains(modelName ?? '')) {
+      if (eventView.modelName.toLowerCase().contains(modelName?.toLowerCase() ?? '')) {
         searchedTargetEvent.add(event);
       }
     }
-    String eventDataString =
-        EventView.fromJson(jsonDecode(searchedTargetEvent.last)).modelData;
-    int indexOfLastEvent = (searchedTargetEvent.length - 1);
+    String eventDataString = '{}';
+    int indexOfLastEvent = -1;
+    if (searchedTargetEvent.isNotEmpty) {
+      eventDataString =
+          EventView.fromJson(jsonDecode(searchedTargetEvent.last)).modelData;
+      indexOfLastEvent = (searchedTargetEvent.length - 1);
+    }
+
     memory = memory.rebuild(
       (b) => b
         ..selectedAppEventName = modelName
@@ -177,7 +181,7 @@ class MemoryService {
 
   void showEventDataByEventIndex(int eventIndex) {
     Memory memory = WrenchStore.get<Memory>() ?? Memory();
-    String eventData = memory.appEvents.toList().elementAt(eventIndex);
+    String eventData = memory.filteredAppEvents.toList().elementAt(eventIndex);
     EventView eventView = EventView.fromJson(jsonDecode(eventData));
     memory = memory.rebuild(
       (b) => b
@@ -189,28 +193,5 @@ class MemoryService {
         ..scroll = false,
     );
     updateState1(memory);
-  }
-
-  Future<void> disconnect() async {
-    Connect connect = WrenchStore.get<Connect>() ?? Connect();
-    try {
-      await connect.vmService!.dispose();
-      await connect.vmService!.onDone;
-      connect = connect.rebuild(
-        (b) => b
-          ..vmService = null
-          ..connected = false,
-      );
-    } catch (e) {
-      connect = connect.rebuild(
-        (b) => b..errorOnEvent = '$e',
-      );
-    } finally {
-      updateState1(connect, reload: false);
-    }
-  }
-
-  void clearConnectScreen() {
-    updateState1(Connect(), reload: false);
   }
 }

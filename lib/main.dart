@@ -16,7 +16,7 @@ class MustangViewer extends StatelessWidget {
     return MaterialApp(
       title: AppConstants.mustangViewer,
       home: const ConnectScreen(),
-      routes: AppRoutes.routeBuilders,
+      onGenerateRoute: AppRoutes.onGenerateRoute,
       theme: ThemeData(
         brightness: Brightness.dark,
       ),
