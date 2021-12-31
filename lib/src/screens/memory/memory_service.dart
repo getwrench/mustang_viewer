@@ -190,7 +190,7 @@ class MemoryService {
         ..selectedAppEventIndex = eventIndex
         ..modelDataSearchTextIndices = ListBuilder([])
         ..modelDataSearchText = ''
-        ..scroll = true,
+        ..scroll = false,
     );
     updateState1(memory);
   }
