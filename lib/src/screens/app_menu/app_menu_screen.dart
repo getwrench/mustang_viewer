@@ -61,7 +61,7 @@ class AppMenuScreen extends StatelessWidget {
                   buttonIcon: const Icon(Icons.home),
                 ),
                 MenuItem(
-                  tooltipMessage: AppConstants.difference,
+                  tooltipMessage: AppConstants.diff,
                   onPress: () {
                     AppMenuService().updateIndex(1);
                     Navigator.pushReplacementNamed(
