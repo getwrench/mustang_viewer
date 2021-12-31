@@ -8,8 +8,8 @@ import 'package:mustang_viewer/src/utils/app_date_time.dart';
 import 'package:mustang_viewer/src/utils/app_styles.dart';
 import 'package:mustang_viewer/src/utils/event_view.dart';
 
-class Timeline extends StatelessWidget {
-  const Timeline(
+class AppStateTimeline extends StatelessWidget {
+  const AppStateTimeline(
     this.data,
     this.onTap,
     this.scrollController,

@@ -1,7 +1,7 @@
 import 'package:mustang_core/mustang_core.dart';
 
 @appModel 
-class $SideMenu {
+class $AppMenu {
   @InitField(false)
   @SerializeField(false)
   late bool busy;
@@ -13,7 +13,7 @@ class $SideMenu {
   @InitField('')
   @SerializeField(false)
   late String errorOnEvent;
-  
+
   @InitField(false)
   late bool clearScreenCache;
 

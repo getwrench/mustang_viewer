@@ -1,29 +1,30 @@
 import 'package:flutter/material.dart';
 import 'package:mustang_core/mustang_widgets.dart';
 import 'package:flutter/scheduler.dart';
-import 'package:mustang_viewer/src/screens/side_menu/side_menu_screen.dart';
+import 'package:mustang_viewer/src/screens/app_menu/app_menu_screen.dart';
+import 'package:mustang_viewer/src/shared_widgets/app_progress_indicator.dart';
 
-import 'difference_state.state.dart';
-import 'difference_service.dart';
+import 'diff_state.state.dart';
+import 'diff_service.dart';
 
-class DifferenceScreen extends StatelessWidget {
-  const DifferenceScreen({
+class DiffScreen extends StatelessWidget {
+  const DiffScreen({
     Key? key,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return StateProvider<DifferenceState>(
-      state: DifferenceState(),
+    return StateProvider<DiffState>(
+      state: DiffState(),
       child: Builder(
         builder: (BuildContext context) {
-          DifferenceState? state = StateConsumer<DifferenceState>().of(context);
+          DiffState? state = StateConsumer<DiffState>().of(context);
           SchedulerBinding.instance?.addPostFrameCallback(
             (_) => DifferenceService().memoizedGetData(),
           );
 
           if (state?.difference.busy ?? false) {
-            return const CircularProgressIndicator();
+            return const AppProgressIndicator();
           }
 
           if (state?.difference.errorMsg.isNotEmpty ?? false) {
@@ -36,12 +37,12 @@ class DifferenceScreen extends StatelessWidget {
     );
   }
 
-  Widget _body(DifferenceState? state, BuildContext context) {
+  Widget _body(DiffState? state, BuildContext context) {
     return Scaffold(
       body: Center(
         child: Row(
           children: [
-            const SideMenuScreen(),
+            const AppMenuScreen(),
             Expanded(
               child: DecoratedBox(
                 decoration: BoxDecoration(

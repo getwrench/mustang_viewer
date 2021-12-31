@@ -1,7 +1,7 @@
 import 'package:mustang_core/mustang_core.dart';
 
 @appModel 
-class $Difference {
+class $Diff {
   @InitField(false)
   @SerializeField(false)
   late bool busy;

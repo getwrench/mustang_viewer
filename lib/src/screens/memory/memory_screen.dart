@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:mustang_core/mustang_widgets.dart';
+import 'package:mustang_viewer/src/screens/app_menu/app_menu_screen.dart';
 import 'package:mustang_viewer/src/screens/memory/next_search_index_action.dart';
 import 'package:mustang_viewer/src/screens/memory/previous_search_index_action.dart';
-import 'package:mustang_viewer/src/screens/side_menu/side_menu_screen.dart';
 import 'package:mustang_viewer/src/shared_widgets/app_progress_indicator.dart';
-import 'package:mustang_viewer/src/shared_widgets/current_state.dart';
-import 'package:mustang_viewer/src/shared_widgets/data_view.dart';
-import 'package:mustang_viewer/src/shared_widgets/timeline.dart';
+import 'package:mustang_viewer/src/shared_widgets/app_state.dart';
+import 'package:mustang_viewer/src/shared_widgets/model_view.dart';
+import 'package:mustang_viewer/src/shared_widgets/app_state_timeline.dart';
 import 'package:mustang_viewer/src/utils/app_styles.dart';
 
 import 'memory_service.dart';
@@ -66,7 +66,7 @@ class MemoryScreen extends StatelessWidget {
       body: Center(
         child: Row(
           children: [
-            const SideMenuScreen(),
+            const AppMenuScreen(),
             Expanded(
               flex: AppStyles.flex4,
               child: Column(
@@ -86,7 +86,7 @@ class MemoryScreen extends StatelessWidget {
                           ),
                         ),
                       ),
-                      child: CurrentState(
+                      child: AppState(
                         state!.memory.appState.toMap(),
                         (modelName) =>
                             MemoryService().showEventDataByModelName(modelName),
@@ -103,7 +103,7 @@ class MemoryScreen extends StatelessWidget {
                           color: Theme.of(context).colorScheme.primary,
                         ),
                       ),
-                      child: Timeline(
+                      child: AppStateTimeline(
                         state.memory.filteredAppEvents.toList(),
                         (eventIndex) => MemoryService()
                             .showEventDataByEventIndex(eventIndex),
@@ -126,7 +126,7 @@ class MemoryScreen extends StatelessWidget {
                     color: Theme.of(context).colorScheme.primary,
                   ),
                 ),
-                child: DataView(
+                child: ModelView(
                   state.memory.modelData,
                   state.memory.modelDataSearchText,
                   MemoryService().setSearchTerm,

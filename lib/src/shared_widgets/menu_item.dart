@@ -1,20 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:mustang_viewer/src/utils/app_styles.dart';
 
-class MenuButton extends StatelessWidget {
-  const MenuButton({
+class MenuItem extends StatelessWidget {
+  const MenuItem({
     Key? key,
     required this.buttonIcon,
     required this.tooltipMessage,
     required this.onPress,
-    this.selected = false,
+    this.active = false,
   }) : super(key: key);
 
   final Icon buttonIcon;
 
   final String tooltipMessage;
 
-  final bool selected;
+  final bool active;
 
   final VoidCallback onPress;
 
@@ -28,7 +28,7 @@ class MenuButton extends StatelessWidget {
           onPressed: onPress,
           child: buttonIcon,
           color:
-              selected ? Colors.black45 : null,
+              active ? Colors.black45 : null,
         ),
       ),
     );

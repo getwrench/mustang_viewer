@@ -14,7 +14,6 @@ class AppConstants {
   static const String liveAppState = 'App state';
   static const String search = 'Search';
   static const String found = 'Found';
-  static const String logout = 'Logout';
   static const String difference = 'Difference';
   static const String home = 'Home';
 }
