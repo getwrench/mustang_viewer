@@ -1,19 +1,14 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
-import 'package:hive/hive.dart';
 import 'package:mustang_core/mustang_widgets.dart';
+import 'package:mustang_viewer/src/screens/app_menu/app_menu_screen.dart';
 import 'package:mustang_viewer/src/screens/memory/next_search_index_action.dart';
 import 'package:mustang_viewer/src/screens/memory/previous_search_index_action.dart';
 import 'package:mustang_viewer/src/shared_widgets/app_progress_indicator.dart';
-import 'package:mustang_viewer/src/shared_widgets/current_state.dart';
-import 'package:mustang_viewer/src/shared_widgets/data_view.dart';
-import 'package:mustang_viewer/src/shared_widgets/timeline.dart';
-import 'package:mustang_viewer/src/utils/app_constants.dart';
-import 'package:mustang_viewer/src/utils/app_routes.dart';
+import 'package:mustang_viewer/src/shared_widgets/app_state.dart';
+import 'package:mustang_viewer/src/shared_widgets/app_state_timeline.dart';
+import 'package:mustang_viewer/src/shared_widgets/model_view.dart';
 import 'package:mustang_viewer/src/utils/app_styles.dart';
-import 'package:mustang_viewer/src/utils/dialog_util.dart';
 
 import 'memory_service.dart';
 import 'memory_state.state.dart';
@@ -68,29 +63,10 @@ class MemoryScreen extends StatelessWidget {
     ScrollController dataViewScrollController,
   ) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text(AppConstants.memory),
-        actions: [
-          MaterialButton(
-            onPressed: () => _disconnect(context, state!),
-            child: const Text(AppConstants.disconnect),
-            hoverColor: Theme.of(context).colorScheme.primary,
-          ),
-          MaterialButton(
-            onPressed: () => showInputDialog(context, state!),
-            child: const Text(AppConstants.fetchStoreData),
-            hoverColor: Theme.of(context).colorScheme.primary,
-          ),
-          // MaterialButton(
-          //   onPressed: () => _fetchCacheData(context, state!),
-          //   child: const Text(AppConstants.fetchCacheData),
-          //   hoverColor: Theme.of(context).colorScheme.primary,
-          // ),
-        ],
-      ),
       body: Center(
         child: Row(
           children: [
+            const AppMenuScreen(),
             Expanded(
               flex: AppStyles.flex4,
               child: Column(
@@ -98,11 +74,19 @@ class MemoryScreen extends StatelessWidget {
                   Expanded(
                     child: DecoratedBox(
                       decoration: BoxDecoration(
-                        border: Border.all(
-                          color: Theme.of(context).colorScheme.primary,
+                        border: Border(
+                          right: BorderSide(
+                            color: Theme.of(context).colorScheme.primary,
+                          ),
+                          bottom: BorderSide(
+                            color: Theme.of(context).colorScheme.primary,
+                          ),
+                          top: BorderSide(
+                            color: Theme.of(context).colorScheme.primary,
+                          ),
                         ),
                       ),
-                      child: CurrentState(
+                      child: AppState(
                         state!.memory.appState.toMap(),
                         (modelName) =>
                             MemoryService().showEventDataByModelName(modelName),
@@ -119,7 +103,7 @@ class MemoryScreen extends StatelessWidget {
                           color: Theme.of(context).colorScheme.primary,
                         ),
                       ),
-                      child: Timeline(
+                      child: AppStateTimeline(
                         state.memory.filteredAppEvents.toList(),
                         (eventIndex) => MemoryService()
                             .showEventDataByEventIndex(eventIndex),
@@ -142,7 +126,7 @@ class MemoryScreen extends StatelessWidget {
                     color: Theme.of(context).colorScheme.primary,
                   ),
                 ),
-                child: DataView(
+                child: ModelView(
                   state.memory.modelData,
                   state.memory.modelDataSearchText,
                   MemoryService().setSearchTerm,
@@ -154,80 +138,6 @@ class MemoryScreen extends StatelessWidget {
                   PreviousSearchIndexAction(),
                 ),
               ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Future<void> _disconnect(BuildContext context, MemoryState state) async {
-    DialogUtil.show(context);
-    await MemoryService().disconnect();
-    Navigator.pop(context);
-    if (state.memory.errorOnEvent.isNotEmpty) {
-      DialogUtil.showMessage(context, state.memory.errorOnEvent);
-    }
-    MemoryService().clearConnectScreen();
-    Navigator.pushReplacementNamed(context, AppRoutes.connect);
-  }
-
-  Future<void> _fetchStoreData(BuildContext context, MemoryState state) async {
-    try {
-      print('----${state.memory.hiveBoxName}');
-      await Process.run(
-          'sh', ['lib/scripts/ios_sh.sh', (state.memory.hiveBoxName)]);
-      Hive.init('lib/scripts/');
-      Box box = await Hive.openBox(state.memory.hiveBoxName);
-      Map storeData = {};
-      for (var element in box.keys) {
-        storeData[element] = box.get(element);
-      }
-      print('Store Data:$storeData');
-    } catch (e) {
-      print('exception:$e');
-    }
-  }
-
-  // Future<void> _fetchCacheData(BuildContext context, MemoryState state) async {
-  //   await Process.run(
-  //       'sh', ['lib/scripts/ios_sh.sh', (state.memory.hiveBoxName)]);
-  //   Hive.init('lib/scripts/');
-  //   LazyBox lazyBox = Hive.lazyBox(state.memory.hiveBoxName);
-  //   Map cacheData = {};
-  //   for (var element in lazyBox.keys) {
-  //     cacheData[element] = lazyBox.get(element);
-  //   }
-  //   print('Cache Data:$cacheData');
-  // }
-
-  Future<void> showInputDialog(BuildContext context, MemoryState state) async {
-    await showDialog(
-      barrierDismissible: false,
-      context: context,
-      builder: (BuildContext context) => WillPopScope(
-        onWillPop: () async => false,
-        child: AlertDialog(
-          content: TextFormField(
-            onChanged: (String hiveBoxName) {
-              MemoryService().updateHiveBoxName(hiveBoxName);
-            },
-          ),
-          actions: [
-            MaterialButton(
-              onPressed: () {
-                Navigator.pop(context);
-              },
-              child: const Text('Close'),
-              hoverColor: Theme.of(context).colorScheme.primary,
-            ),
-            MaterialButton(
-              onPressed: () {
-                _fetchStoreData(context, state);
-                Navigator.pop(context);
-              },
-              child: const Text('Fetch'),
-              hoverColor: Theme.of(context).colorScheme.primary,
             ),
           ],
         ),
