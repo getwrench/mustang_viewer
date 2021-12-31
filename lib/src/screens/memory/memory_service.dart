@@ -213,4 +213,10 @@ class MemoryService {
   void clearConnectScreen() {
     updateState1(Connect(), reload: false);
   }
+
+  void updateHiveBoxName(String boxName) {
+    Memory memory = WrenchStore.get<Memory>() ?? Memory();
+    memory = memory.rebuild((b) => b..hiveBoxName = boxName);
+    updateState1(memory, reload: false);
+  }
 }

@@ -50,4 +50,7 @@ class $Memory {
 
   @InitField('')
   late String selectedAppEventName;
+
+  @InitField('')
+  late String hiveBoxName;
 }

@@ -1,5 +1,8 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:hive/hive.dart';
 import 'package:mustang_core/mustang_widgets.dart';
 import 'package:mustang_viewer/src/screens/memory/next_search_index_action.dart';
 import 'package:mustang_viewer/src/screens/memory/previous_search_index_action.dart';
@@ -73,6 +76,16 @@ class MemoryScreen extends StatelessWidget {
             child: const Text(AppConstants.disconnect),
             hoverColor: Theme.of(context).colorScheme.primary,
           ),
+          MaterialButton(
+            onPressed: () => showInputDialog(context, state!),
+            child: const Text(AppConstants.fetchStoreData),
+            hoverColor: Theme.of(context).colorScheme.primary,
+          ),
+          // MaterialButton(
+          //   onPressed: () => _fetchCacheData(context, state!),
+          //   child: const Text(AppConstants.fetchCacheData),
+          //   hoverColor: Theme.of(context).colorScheme.primary,
+          // ),
         ],
       ),
       body: Center(
@@ -157,5 +170,68 @@ class MemoryScreen extends StatelessWidget {
     }
     MemoryService().clearConnectScreen();
     Navigator.pushReplacementNamed(context, AppRoutes.connect);
+  }
+
+  Future<void> _fetchStoreData(BuildContext context, MemoryState state) async {
+    try {
+      print('----${state.memory.hiveBoxName}');
+      await Process.run(
+          'sh', ['lib/scripts/ios_sh.sh', (state.memory.hiveBoxName)]);
+      Hive.init('lib/scripts/');
+      Box box = await Hive.openBox(state.memory.hiveBoxName);
+      Map storeData = {};
+      for (var element in box.keys) {
+        storeData[element] = box.get(element);
+      }
+      print('Store Data:$storeData');
+    } catch (e) {
+      print('exception:$e');
+    }
+  }
+
+  // Future<void> _fetchCacheData(BuildContext context, MemoryState state) async {
+  //   await Process.run(
+  //       'sh', ['lib/scripts/ios_sh.sh', (state.memory.hiveBoxName)]);
+  //   Hive.init('lib/scripts/');
+  //   LazyBox lazyBox = Hive.lazyBox(state.memory.hiveBoxName);
+  //   Map cacheData = {};
+  //   for (var element in lazyBox.keys) {
+  //     cacheData[element] = lazyBox.get(element);
+  //   }
+  //   print('Cache Data:$cacheData');
+  // }
+
+  Future<void> showInputDialog(BuildContext context, MemoryState state) async {
+    await showDialog(
+      barrierDismissible: false,
+      context: context,
+      builder: (BuildContext context) => WillPopScope(
+        onWillPop: () async => false,
+        child: AlertDialog(
+          content: TextFormField(
+            onChanged: (String hiveBoxName) {
+              MemoryService().updateHiveBoxName(hiveBoxName);
+            },
+          ),
+          actions: [
+            MaterialButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: const Text('Close'),
+              hoverColor: Theme.of(context).colorScheme.primary,
+            ),
+            MaterialButton(
+              onPressed: () {
+                _fetchStoreData(context, state);
+                Navigator.pop(context);
+              },
+              child: const Text('Fetch'),
+              hoverColor: Theme.of(context).colorScheme.primary,
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }
