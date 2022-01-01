@@ -1,16 +1,14 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:mustang_viewer/src/models/app_event.model.dart';
 import 'package:mustang_viewer/src/shared_widgets/event_text.dart';
 import 'package:mustang_viewer/src/utils/app_constants.dart';
 import 'package:mustang_viewer/src/utils/app_date_time.dart';
 import 'package:mustang_viewer/src/utils/app_styles.dart';
-import 'package:mustang_viewer/src/utils/event_view.dart';
 
 class AppState extends StatelessWidget {
   const AppState(
-    this.data,
+    this.stateMap,
     this.onTap,
     this.scrollController,
     this.selectedModel,
@@ -18,7 +16,7 @@ class AppState extends StatelessWidget {
     Key? key,
   }) : super(key: key);
 
-  final Map<String, String> data;
+  final Map<String, AppEvent> stateMap;
   final void Function(String modelName) onTap;
   final ScrollController scrollController;
   final String selectedModel;
@@ -35,7 +33,7 @@ class AppState extends StatelessWidget {
         ),
       );
     }
-    List<String> items = data.keys.toList();
+    List<String> items = stateMap.keys.toList();
     return Column(
       children: [
         const Padding(
@@ -57,15 +55,14 @@ class AppState extends StatelessWidget {
               itemCount: items.length,
               itemBuilder: (BuildContext context, int index) {
                 final String modelName = items[index];
-                EventView eventView =
-                    EventView.fromJson(jsonDecode(data[modelName] ?? '{}'));
+                AppEvent appEvent = stateMap[modelName]!;
                 return ListTile(
                   dense: true,
                   onTap: () => onTap(modelName),
                   title: EventText(
                     rowNum: index + 1,
                     ts: AppDateTime.timeForDateTime(
-                      DateTime.fromMillisecondsSinceEpoch(eventView.timestamp),
+                      DateTime.fromMillisecondsSinceEpoch(appEvent.timestamp),
                     ),
                     modelName: modelName,
                     selected: modelName == selectedModel,

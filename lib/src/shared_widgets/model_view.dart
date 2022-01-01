@@ -4,36 +4,38 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:mustang_viewer/src/screens/memory/next_search_index_action.dart';
 import 'package:mustang_viewer/src/screens/memory/previous_search_index_action.dart';
-import 'package:mustang_viewer/src/utils/next_search_result_intent.dart';
-import 'package:mustang_viewer/src/utils/previous_search_result_intent.dart';
 import 'package:mustang_viewer/src/utils/app_constants.dart';
 import 'package:mustang_viewer/src/utils/app_shortcuts.dart';
 import 'package:mustang_viewer/src/utils/app_styles.dart';
+import 'package:mustang_viewer/src/utils/next_search_result_intent.dart';
+import 'package:mustang_viewer/src/utils/previous_search_result_intent.dart';
 import 'package:pretty_json/pretty_json.dart';
 
 class ModelView extends StatelessWidget {
   const ModelView(
-    this.text,
+    this.modelData,
     this.searchText,
-    this.onSearchTermChange,
+    this.onSearchTextChange,
     this.scrollController,
     this.highlightIndices,
     this.indexOfSelectedHighlight,
     this.updateSelectedIndex,
     this.nextSearchIndexAction,
-    this.previousSearchIndexAction, {
+    this.previousSearchIndexAction,
+    this.searchTextController, {
     Key? key,
   }) : super(key: key);
 
-  final String text;
+  final String modelData;
   final String searchText;
-  final void Function(String term) onSearchTermChange;
+  final void Function(String term) onSearchTextChange;
   final ScrollController scrollController;
   final List<int> highlightIndices;
   final int indexOfSelectedHighlight;
   final void Function(int index) updateSelectedIndex;
   final NextSearchIndexAction nextSearchIndexAction;
   final PreviousSearchIndexAction previousSearchIndexAction;
+  final TextEditingController searchTextController;
 
   @override
   Widget build(BuildContext context) {
@@ -82,6 +84,8 @@ class ModelView extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.all(AppStyles.padding8),
             child: TextField(
+              controller: searchTextController,
+              maxLines: 1,
               decoration: InputDecoration(
                 border: const OutlineInputBorder(),
                 hintText: AppConstants.search,
@@ -112,7 +116,7 @@ class ModelView extends StatelessWidget {
                       )
                     : null,
               ),
-              onChanged: onSearchTermChange,
+              onChanged: onSearchTextChange,
             ),
           ),
           Expanded(
@@ -130,7 +134,7 @@ class ModelView extends StatelessWidget {
                           textScaleFactor: AppStyles.dataTextScaleFactor,
                           text: highlightSearchTerm(
                             highlightIndices,
-                            prettyJson(jsonDecode(text)),
+                            prettyJson(jsonDecode(modelData)),
                             searchText,
                             highlightKeys,
                           ),
