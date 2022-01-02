@@ -29,8 +29,7 @@ class $Memory {
   @InitField([])
   late BuiltList<$AppEvent> filteredAppTimelineEvents;
 
-  @InitField('{}')
-  late String modelData;
+  late $AppEvent modelViewEvent;
 
   @InitField('')
   late String selectedAppStateModel;

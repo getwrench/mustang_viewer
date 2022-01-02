@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:mustang_core/mustang_widgets.dart';
+import 'package:mustang_viewer/src/models/app_event.model.dart';
 import 'package:mustang_viewer/src/screens/app_menu/app_menu_screen.dart';
 import 'package:mustang_viewer/src/screens/memory/next_search_index_action.dart';
 import 'package:mustang_viewer/src/screens/memory/previous_search_index_action.dart';
@@ -137,7 +138,7 @@ class MemoryScreen extends StatelessWidget {
                   ),
                 ),
                 child: ModelView(
-                  state.memory.modelData,
+                  state.memory.modelViewEvent ?? AppEvent(),
                   state.memory.modelDataSearchText,
                   MemoryService().onChangeModelViewSearch,
                   modelViewScrollController,

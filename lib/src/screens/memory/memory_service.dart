@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:built_collection/built_collection.dart';
 import 'package:mustang_core/mustang_core.dart';
 import 'package:mustang_viewer/src/models/app_event.model.dart';
@@ -9,7 +7,6 @@ import 'package:mustang_viewer/src/screens/memory/memory_service.service.dart';
 import 'package:mustang_viewer/src/screens/memory/memory_state.dart';
 import 'package:mustang_viewer/src/utils/app_constants.dart';
 import 'package:mustang_viewer/src/utils/app_text_highlighter.dart';
-import 'package:pretty_json/pretty_json.dart';
 import 'package:vm_service/vm_service.dart';
 
 @ScreenService(screenState: $MemoryState)
@@ -67,7 +64,7 @@ class MemoryService {
                   .rebuild((b) => b.updateValue(modelName, (_) => appEvent,
                       ifAbsent: () => appEvent))
                   .toBuilder()
-              ..modelData = modelData
+              ..modelViewEvent = appEvent.toBuilder()
               ..scroll = true,
           );
 
@@ -112,7 +109,9 @@ class MemoryService {
         ..filteredAppTimelineEvents = filteredTimelineEvents.isNotEmpty
             ? ListBuilder<AppEvent>(filteredTimelineEvents)
             : ListBuilder<AppEvent>(memory.appTimelineEvents)
-        ..modelData = filteredTimelineEvents.last.modelData
+        ..modelViewEvent = filteredTimelineEvents.isNotEmpty
+            ? filteredTimelineEvents.last.toBuilder()
+            : AppEvent().toBuilder()
         ..selectedTimelineModelIndex = filteredTimelineEvents.length - 1,
     );
 
@@ -121,9 +120,9 @@ class MemoryService {
 
   void onChangeModelViewSearch(String searchText) {
     Memory memory = WrenchStore.get<Memory>() ?? Memory();
-    String prettyEventData = prettyJson(jsonDecode(memory.modelData));
+    AppEvent selectedModel = memory.modelViewEvent ?? AppEvent();
     List<int> highlightIndices = AppTextHighlighter.findHighlights(
-      prettyEventData.toLowerCase(),
+      selectedModel.modelData.toLowerCase(),
       searchText.toLowerCase(),
     );
     memory = memory.rebuild(
@@ -141,7 +140,7 @@ class MemoryService {
       AppEvent appEvent = memory.appState[modelName]!;
       memory = memory.rebuild(
         (b) => b
-          ..modelData = appEvent.modelData
+          ..modelViewEvent = appEvent.toBuilder()
           ..selectedAppStateModel = modelName
           ..selectedTimelineModelIndex = -1
           ..modelDataSearchTextIndices = ListBuilder([])
@@ -170,7 +169,7 @@ class MemoryService {
         memory.filteredAppTimelineEvents.toList().elementAt(eventIndex);
     memory = memory.rebuild(
       (b) => b
-        ..modelData = appEvent.modelData
+        ..modelViewEvent = appEvent.toBuilder()
         ..selectedAppStateModel = ''
         ..selectedTimelineModelIndex = eventIndex
         ..modelDataSearchTextIndices = ListBuilder([])

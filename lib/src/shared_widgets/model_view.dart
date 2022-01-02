@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:mustang_viewer/src/models/app_event.model.dart';
 import 'package:mustang_viewer/src/screens/memory/next_search_index_action.dart';
 import 'package:mustang_viewer/src/screens/memory/previous_search_index_action.dart';
 import 'package:mustang_viewer/src/utils/app_constants.dart';
@@ -13,7 +14,7 @@ import 'package:pretty_json/pretty_json.dart';
 
 class ModelView extends StatelessWidget {
   const ModelView(
-    this.modelData,
+    this.activeEvent,
     this.searchText,
     this.onSearchTextChange,
     this.scrollController,
@@ -26,7 +27,7 @@ class ModelView extends StatelessWidget {
     Key? key,
   }) : super(key: key);
 
-  final String modelData;
+  final AppEvent activeEvent;
   final String searchText;
   final void Function(String term) onSearchTextChange;
   final ScrollController scrollController;
@@ -134,7 +135,7 @@ class ModelView extends StatelessWidget {
                           textScaleFactor: AppStyles.dataTextScaleFactor,
                           text: highlightSearchTerm(
                             highlightIndices,
-                            prettyJson(jsonDecode(modelData)),
+                            prettyJson(jsonDecode(activeEvent.modelData)),
                             searchText,
                             highlightKeys,
                           ),
