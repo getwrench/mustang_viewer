@@ -7,8 +7,8 @@ import 'package:mustang_viewer/src/utils/app_routes.dart';
 import 'package:mustang_viewer/src/utils/app_styles.dart';
 import 'package:mustang_viewer/src/utils/dialog_util.dart';
 
-import 'app_menu_state.state.dart';
 import 'app_menu_service.dart';
+import 'app_menu_state.state.dart';
 
 class AppMenuScreen extends StatelessWidget {
   const AppMenuScreen({
@@ -28,7 +28,7 @@ class AppMenuScreen extends StatelessWidget {
           }
 
           if (state?.appMenu.errorMsg.isNotEmpty ?? false) {
-            Text(state?.appMenu.errorMsg ?? 'Unknown error');
+            Text(state?.appMenu.errorMsg ?? AppConstants.unknownError);
           }
 
           return _body(state, context);
@@ -40,8 +40,8 @@ class AppMenuScreen extends StatelessWidget {
   Widget _body(AppMenuState? state, BuildContext context) {
     return Container(
       width: AppStyles.width50,
-      decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.primary,
+      decoration: const BoxDecoration(
+        color: Colors.black12,
       ),
       child: Column(
         children: [

@@ -5,6 +5,6 @@ import 'package:mustang_viewer/src/utils/previous_search_result_intent.dart';
 class PreviousSearchIndexAction extends Action<PreviousSearchResultIntent> {
   @override
   Object? invoke(PreviousSearchResultIntent intent) {
-    MemoryService().updateSelectedHighlight(intent.previousIndex);
+    MemoryService().onNavigateModelViewSearchMatches(intent.previousIndex);
   }
 }
