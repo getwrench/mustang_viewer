@@ -2,8 +2,8 @@ class AppConstants {
   static const String connect = 'Connect';
   static const String dataView = 'Model data';
   static const String disconnect = 'Disconnect';
-  static const String fetchStoreData = 'StoreData';
-  static const String fetchCacheData = 'CacheData';
+  static const String storeData = 'StoreData';
+  static const String cacheData = 'CacheData';
   static const String debugServiceUrl = 'Debug service URL';
   static const String eventExtension = 'mustang';
   static const String hintServiceUrl =

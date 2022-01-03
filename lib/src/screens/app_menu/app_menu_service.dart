@@ -1,6 +1,7 @@
 import 'package:mustang_core/mustang_core.dart';
 import 'package:mustang_viewer/src/models/app_menu.model.dart';
 import 'package:mustang_viewer/src/models/connect.model.dart';
+import 'package:mustang_viewer/src/models/persistent_store.model.dart';
 
 import 'app_menu_service.service.dart';
 import 'app_menu_state.dart';
@@ -34,5 +35,13 @@ class AppMenuService {
 
   void clearConnectScreen() {
     updateState1(Connect(), reload: false);
+  }
+
+  void clearPersistentStoreData() {
+    PersistentStore persistentStore =
+        WrenchStore.get<PersistentStore>() ?? PersistentStore();
+    persistentStore =
+        persistentStore.rebuild((b) => b..persistentModelData = '{}');
+    updateState1(persistentStore);
   }
 }

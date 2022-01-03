@@ -7,8 +7,8 @@ import 'package:mustang_viewer/src/utils/app_routes.dart';
 import 'package:mustang_viewer/src/utils/app_styles.dart';
 import 'package:mustang_viewer/src/utils/dialog_util.dart';
 
-import 'app_menu_state.state.dart';
 import 'app_menu_service.dart';
+import 'app_menu_state.state.dart';
 
 class AppMenuScreen extends StatelessWidget {
   const AppMenuScreen({
@@ -71,6 +71,27 @@ class AppMenuScreen extends StatelessWidget {
                   },
                   active: state.appMenu.activeIndex == 1,
                   buttonIcon: const Icon(Icons.call_split),
+                ),
+                MenuItem(
+                  tooltipMessage: AppConstants.storeData,
+                  onPress: () {
+                    AppMenuService().updateIndex(2);
+                    AppMenuService().clearPersistentStoreData();
+                    Navigator.pushNamed(
+                      context,
+                      AppRoutes.store,
+                    );
+                  },
+                  active: state.appMenu.activeIndex == 2,
+                  buttonIcon: const Icon(Icons.storage),
+                ),
+                MenuItem(
+                  tooltipMessage: AppConstants.cacheData,
+                  onPress: () {
+                    AppMenuService().updateIndex(3);
+                  },
+                  active: state.appMenu.activeIndex == 3,
+                  buttonIcon: const Icon(Icons.cached),
                 ),
               ],
             ),
