@@ -2,8 +2,8 @@
 
 if [ "$#" -eq 1 ]; then
     IOS_PATH=`xcrun simctl get_app_container booted com.wrench.app2 data`
-    if [ -f $IOS_PATH/Documents/$1.hive ]; then
-        cp $IOS_PATH/Documents/$1.hive ./lib/scripts/
+    if [ -f $IOS_PATH/Documents/$1]; then
+        cp $IOS_PATH/Documents/$1 ./lib/scripts/
     else
         echo "Invalid BoxName"
     fi

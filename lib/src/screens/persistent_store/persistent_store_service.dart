@@ -31,8 +31,8 @@ class PersistentStoreService {
     PersistentStore persistentStore =
         WrenchStore.get<PersistentStore>() ?? PersistentStore();
     try {
-      ProcessResult processResult = await Process.run(
-          'sh', ['lib/scripts/ios_sh.sh', (persistentStore.hiveBoxName)]);
+      ProcessResult processResult = await Process.run('sh',
+          ['lib/scripts/ios_sh.sh', ('${persistentStore.hiveBoxName}.hive')]);
       print('output:${processResult.stdout}');
       if (processResult.stdout != "Invalid BoxName") {
         print('iff');

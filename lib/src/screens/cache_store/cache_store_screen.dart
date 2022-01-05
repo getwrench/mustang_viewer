@@ -3,7 +3,7 @@ import 'package:mustang_core/mustang_widgets.dart';
 import 'package:mustang_viewer/src/screens/persistent_store/persistent_store_service.dart';
 import 'package:mustang_viewer/src/shared_widgets/app_progress_indicator.dart';
 
-import 'persistent_store_state.state.dart';
+import 'cache_store_state.state.dart';
 
 class PersistentStoreScreen extends StatelessWidget {
   const PersistentStoreScreen({
@@ -14,21 +14,20 @@ class PersistentStoreScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final TextEditingController controller = TextEditingController();
 
-    return StateProvider<PersistentStoreState>(
-      state: PersistentStoreState(),
+    return StateProvider<CacheStoreState>(
+      state: CacheStoreState(),
       child: Builder(
         builder: (BuildContext context) {
-          PersistentStoreState? state =
-              StateConsumer<PersistentStoreState>().of(context);
+          CacheStoreState? state = StateConsumer<CacheStoreState>().of(context);
 
-          if (state!.persistentStore.busy) {
+          if (state!.cacheStore.busy) {
             const Scaffold(
               body: AppProgressIndicator(),
             );
           }
 
-          if (state.persistentStore.errorMsg.isNotEmpty) {
-            Text(state.persistentStore.errorMsg);
+          if (state.cacheStore.errorMsg.isNotEmpty) {
+            Text(state.cacheStore.errorMsg);
           }
 
           return _body(state, context, controller);
@@ -38,11 +37,11 @@ class PersistentStoreScreen extends StatelessWidget {
   }
 
   Widget _body(
-    PersistentStoreState state,
+    CacheStoreState state,
     BuildContext context,
     TextEditingController controller,
   ) {
-    String storeData = state.persistentStore.persistentModelData;
+    String storeData = state.cacheStore.cacheModelData;
     return Scaffold(
       appBar: AppBar(),
       body: SingleChildScrollView(
@@ -56,9 +55,9 @@ class PersistentStoreScreen extends StatelessWidget {
     );
   }
 
-  Widget showInputDialog(BuildContext context, PersistentStoreState state) {
-    print('---${state.persistentStore.persistentModelData}');
-    if (state.persistentStore.persistentModelData.length == 2) {
+  Widget showInputDialog(BuildContext context, CacheStoreState state) {
+    print('---${state.cacheStore.cacheModelData}');
+    if (state.cacheStore.cacheModelData.length == 2) {
       return AlertDialog(
         content: TextFormField(
           onChanged: (String hiveBoxName) {
