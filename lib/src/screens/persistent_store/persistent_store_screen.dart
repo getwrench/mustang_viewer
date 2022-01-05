@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:mustang_core/mustang_widgets.dart';
 import 'package:mustang_viewer/src/screens/persistent_store/persistent_store_service.dart';
 import 'package:mustang_viewer/src/shared_widgets/app_progress_indicator.dart';
+import 'package:mustang_viewer/src/utils/app_constants.dart';
 
 import 'persistent_store_state.state.dart';
 
@@ -57,13 +58,27 @@ class PersistentStoreScreen extends StatelessWidget {
   }
 
   Widget showInputDialog(BuildContext context, PersistentStoreState state) {
-    print('---${state.persistentStore.persistentModelData}');
     if (state.persistentStore.persistentModelData.length == 2) {
       return AlertDialog(
-        content: TextFormField(
-          onChanged: (String hiveBoxName) {
-            PersistentStoreService().updateHiveBoxName(hiveBoxName);
-          },
+        content: Column(
+          children: [
+            TextFormField(
+              onChanged: (String appPkgName) {
+                PersistentStoreService().updateAppPkgName(appPkgName);
+              },
+              decoration: const InputDecoration(
+                hintText: AppConstants.pkgNameHintText,
+              ),
+            ),
+            TextFormField(
+              onChanged: (String hiveBoxName) {
+                PersistentStoreService().updateHiveBoxName(hiveBoxName);
+              },
+              decoration: const InputDecoration(
+                hintText: AppConstants.boxNameHintText,
+              ),
+            ),
+          ],
         ),
         actions: [
           MaterialButton(

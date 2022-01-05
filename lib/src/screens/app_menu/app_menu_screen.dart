@@ -89,6 +89,11 @@ class AppMenuScreen extends StatelessWidget {
                   tooltipMessage: AppConstants.cacheData,
                   onPress: () {
                     AppMenuService().updateIndex(3);
+                    AppMenuService().clearCacheStoreData();
+                    Navigator.pushNamed(
+                      context,
+                      AppRoutes.cache,
+                    );
                   },
                   active: state.appMenu.activeIndex == 3,
                   buttonIcon: const Icon(Icons.cached),

@@ -27,20 +27,30 @@ class PersistentStoreService {
     updateState1(persistentStore, reload: false);
   }
 
+  void updateAppPkgName(String appPkgName) {
+    PersistentStore persistentStore =
+        WrenchStore.get<PersistentStore>() ?? PersistentStore();
+    persistentStore =
+        persistentStore.rebuild((b) => b..applicationPkgName = appPkgName);
+    updateState1(persistentStore, reload: false);
+  }
+
   Future<void> fetchStoreData() async {
     PersistentStore persistentStore =
         WrenchStore.get<PersistentStore>() ?? PersistentStore();
     try {
-      ProcessResult processResult = await Process.run('sh',
-          ['lib/scripts/ios_sh.sh', ('${persistentStore.hiveBoxName}.hive')]);
-      print('output:${processResult.stdout}');
+      ProcessResult processResult = await Process.run('sh', [
+        'lib/scripts/ios_sh.sh',
+        ('${persistentStore.hiveBoxName}.hive'),
+        (persistentStore.applicationPkgName)
+      ]);
+      print('process result:${processResult.stdout}');
       if (processResult.stdout != "Invalid BoxName") {
-        print('iff');
         Hive.init('lib/scripts/');
         Box box = await Hive.openBox(persistentStore.hiveBoxName);
         Map<String, String> storeData = {};
-        for (String element in box.keys) {
-          storeData[element] = box.get(element);
+        for (String key in box.keys) {
+          storeData[key] = box.get(key);
         }
         storeData = storeData.map((key, value) => MapEntry('"$key"', value));
         persistentStore = persistentStore.rebuild((b) => b

@@ -18,4 +18,7 @@ class $PersistentStore {
 
   @InitField('{}')
   late String persistentModelData;
+
+  @InitField('')
+  late String applicationPkgName;
 }

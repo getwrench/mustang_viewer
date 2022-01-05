@@ -18,4 +18,6 @@ class AppConstants {
   static const String found = 'Found';
   static const String diff = 'Diff';
   static const String home = 'Home';
+  static const String boxNameHintText = 'Enter HiveBoxName';
+  static const String pkgNameHintText = 'Enter Application Package Name';
 }

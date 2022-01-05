@@ -18,4 +18,7 @@ class $CacheStore {
 
   @InitField('{}')
   late String cacheModelData;
+
+  @InitField('')
+  late String applicationPkgName;
 }
