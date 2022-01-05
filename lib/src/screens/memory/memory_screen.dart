@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:mustang_core/mustang_widgets.dart';
+import 'package:mustang_viewer/src/models/app_event.model.dart';
 import 'package:mustang_viewer/src/screens/app_menu/app_menu_screen.dart';
 import 'package:mustang_viewer/src/screens/memory/next_search_index_action.dart';
 import 'package:mustang_viewer/src/screens/memory/previous_search_index_action.dart';
@@ -23,17 +24,26 @@ class MemoryScreen extends StatelessWidget {
     final ScrollController currentStateScrollController = ScrollController();
     final ScrollController timelineScrollController = ScrollController();
     final ScrollController dataViewScrollController = ScrollController();
+    final TextEditingController dataViewSearchTextController =
+        TextEditingController();
 
     return StateProvider<MemoryState>(
       state: MemoryState(),
       child: Builder(
         builder: (BuildContext context) {
-          MemoryState? state = StateConsumer<MemoryState>().of(context);
+          MemoryState state = StateConsumer<MemoryState>().of(context)!;
+
+          dataViewSearchTextController.value = TextEditingValue(
+            text: state.memory.modelDataSearchText,
+            selection: TextSelection.collapsed(
+                offset: state.memory.modelDataSearchText.length),
+          );
+
           SchedulerBinding.instance?.addPostFrameCallback(
             (_) => MemoryService().memoizedSubscribe(),
           );
 
-          if (state!.memory.busy) {
+          if (state.memory.busy) {
             const Scaffold(
               body: AppProgressIndicator(),
             );
@@ -49,6 +59,7 @@ class MemoryScreen extends StatelessWidget {
             currentStateScrollController,
             timelineScrollController,
             dataViewScrollController,
+            dataViewSearchTextController,
           );
         },
       ),
@@ -58,9 +69,10 @@ class MemoryScreen extends StatelessWidget {
   Widget _body(
     MemoryState? state,
     BuildContext context,
-    ScrollController currentStateScrollController,
-    ScrollController timelineScrollController,
-    ScrollController dataViewScrollController,
+    ScrollController appStateScrollController,
+    ScrollController appStateTimelineScrollController,
+    ScrollController modelViewScrollController,
+    TextEditingController dataViewSearchTextController,
   ) {
     return Scaffold(
       body: Center(
@@ -89,8 +101,8 @@ class MemoryScreen extends StatelessWidget {
                       child: AppState(
                         state!.memory.appState.toMap(),
                         (modelName) =>
-                            MemoryService().showEventDataByModelName(modelName),
-                        currentStateScrollController,
+                            MemoryService().onClickOfAppStateModel(modelName),
+                        appStateScrollController,
                         state.memory.selectedAppStateModel,
                         state.memory.scroll,
                       ),
@@ -104,14 +116,13 @@ class MemoryScreen extends StatelessWidget {
                         ),
                       ),
                       child: AppStateTimeline(
-                        state.memory.filteredAppEvents.toList(),
-                        (eventIndex) => MemoryService()
-                            .showEventDataByEventIndex(eventIndex),
-                        timelineScrollController,
-                        state.memory.selectedAppEventIndex,
+                        state.memory.filteredAppTimelineEvents.toList(),
+                        (eventIndex) =>
+                            MemoryService().onClickTimelineEvent(eventIndex),
+                        appStateTimelineScrollController,
+                        state.memory.selectedTimelineModelIndex,
                         state.memory.scroll,
-                        MemoryService().updatedSelectedModel,
-                        state.memory.selectedAppEventName,
+                        MemoryService().filterAppTimelineEvents,
                       ),
                     ),
                   ),
@@ -127,15 +138,16 @@ class MemoryScreen extends StatelessWidget {
                   ),
                 ),
                 child: ModelView(
-                  state.memory.modelData,
+                  state.memory.modelViewEvent ?? AppEvent(),
                   state.memory.modelDataSearchText,
-                  MemoryService().setSearchTerm,
-                  dataViewScrollController,
+                  MemoryService().onChangeModelViewSearch,
+                  modelViewScrollController,
                   state.memory.modelDataSearchTextIndices.toList(),
                   state.memory.selectedModelDataSearchTextIndex,
-                  MemoryService().updateSelectedHighlight,
+                  MemoryService().onNavigateModelViewSearchMatches,
                   NextSearchIndexAction(),
                   PreviousSearchIndexAction(),
+                  dataViewSearchTextController,
                 ),
               ),
             ),

@@ -12,14 +12,7 @@ class ConnectService {
   Future<void> connect(String wsUri) async {
     if (wsUri.isEmpty) return;
 
-    Connect connect = WrenchStore.get<Connect>() ?? Connect();
-    connect = connect.rebuild(
-      (b) => b
-        ..errorOnEvent = ''
-        ..connected = false
-        ..vmService = null,
-    );
-
+    Connect connect = Connect();
     try {
       VmService vmService = await vmServiceConnectUri(wsUri);
       connect = connect.rebuild(
@@ -29,10 +22,7 @@ class ConnectService {
       );
     } catch (e) {
       connect = connect.rebuild(
-        (b) => b
-          ..vmService = null
-          ..connected = false
-          ..errorOnEvent = '$e',
+        (b) => b..errorOnEvent = '$e',
       );
     } finally {
       updateState1(connect, reload: false);
@@ -40,16 +30,14 @@ class ConnectService {
   }
 
   void validateUri(String wsUri) {
-    Connect connect = WrenchStore.get<Connect>() ?? Connect();
-    connect = connect.rebuild(
-      (b) => b.readToSubmit = wsUri.isNotEmpty,
+    Connect connect = Connect().rebuild(
+      (b) => b..readToSubmit = wsUri.isNotEmpty,
     );
     updateState1(connect);
   }
 
   void clearMemoryScreen() {
-    Memory memory = Memory();
-    memory = memory.rebuild(
+    Memory memory = Memory().rebuild(
       (b) => b..clearScreenCache = true,
     );
     updateState1(memory, reload: false);

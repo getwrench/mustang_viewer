@@ -1,32 +1,28 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:mustang_viewer/src/models/app_event.model.dart';
 import 'package:mustang_viewer/src/shared_widgets/event_text.dart';
 import 'package:mustang_viewer/src/utils/app_constants.dart';
 import 'package:mustang_viewer/src/utils/app_date_time.dart';
 import 'package:mustang_viewer/src/utils/app_styles.dart';
-import 'package:mustang_viewer/src/utils/event_view.dart';
 
 class AppStateTimeline extends StatelessWidget {
   const AppStateTimeline(
-    this.data,
+    this.events,
     this.onTap,
     this.scrollController,
     this.selectedEventIndex,
     this.scroll,
-    this.onDropdownChange,
-    this.selectedModelName, {
+    this.onSearch, {
     Key? key,
   }) : super(key: key);
 
-  final List<String> data;
+  final List<AppEvent> events;
   final void Function(int eventIndex) onTap;
   final ScrollController scrollController;
   final int selectedEventIndex;
   final bool scroll;
-  final void Function(String?) onDropdownChange;
-  final String selectedModelName;
+  final void Function(String) onSearch;
 
   @override
   Widget build(BuildContext context) {
@@ -63,7 +59,7 @@ class AppStateTimeline extends StatelessWidget {
                 border: OutlineInputBorder(),
                 hintText: AppConstants.search,
               ),
-              onChanged: onDropdownChange,
+              onChanged: onSearch,
             ),
           ),
         ),
@@ -73,19 +69,18 @@ class AppStateTimeline extends StatelessWidget {
             controller: scrollController,
             child: ListView.separated(
               controller: scrollController,
-              itemCount: data.length,
+              itemCount: events.length,
               itemBuilder: (BuildContext context, int index) {
-                EventView eventView =
-                    EventView.fromJson(jsonDecode(data[index]));
+                AppEvent appEvent = events[index];
                 return ListTile(
                   dense: true,
                   onTap: () => onTap(index),
                   title: EventText(
                     rowNum: index + 1,
                     ts: AppDateTime.timeForDateTime(
-                      DateTime.fromMillisecondsSinceEpoch(eventView.timestamp),
+                      DateTime.fromMillisecondsSinceEpoch(appEvent.timestamp),
                     ),
-                    modelName: eventView.modelName,
+                    modelName: appEvent.modelName,
                     selected: index == selectedEventIndex,
                   ),
                 );

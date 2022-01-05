@@ -28,7 +28,7 @@ class AppMenuScreen extends StatelessWidget {
           }
 
           if (state?.appMenu.errorMsg.isNotEmpty ?? false) {
-            Text(state?.appMenu.errorMsg ?? 'Unknown error');
+            Text(state?.appMenu.errorMsg ?? AppConstants.unknownError);
           }
 
           return _body(state, context);
@@ -40,8 +40,8 @@ class AppMenuScreen extends StatelessWidget {
   Widget _body(AppMenuState? state, BuildContext context) {
     return Container(
       width: AppStyles.width50,
-      decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.primary,
+      decoration: const BoxDecoration(
+        color: Colors.black12,
       ),
       child: Column(
         children: [

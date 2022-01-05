@@ -1,6 +1,8 @@
 import 'package:built_collection/built_collection.dart';
 import 'package:mustang_core/mustang_core.dart';
 
+import 'app_event.dart';
+
 @appModel
 class $Memory {
   @InitField(false)
@@ -19,22 +21,21 @@ class $Memory {
   late bool clearScreenCache;
 
   @InitField({})
-  late BuiltMap<String, String> appState;
+  late BuiltMap<String, $AppEvent> appState;
 
   @InitField([])
-  late BuiltList<String> appEvents;
+  late BuiltList<$AppEvent> appTimelineEvents;
 
   @InitField([])
-  late BuiltList<String> filteredAppEvents;
+  late BuiltList<$AppEvent> filteredAppTimelineEvents;
 
-  @InitField('{}')
-  late String modelData;
+  late $AppEvent modelViewEvent;
 
   @InitField('')
   late String selectedAppStateModel;
 
   @InitField(-1)
-  late int selectedAppEventIndex;
+  late int selectedTimelineModelIndex;
 
   @InitField(true)
   late bool scroll;
@@ -49,7 +50,7 @@ class $Memory {
   late int selectedModelDataSearchTextIndex;
 
   @InitField('')
-  late String selectedAppEventName;
+  late String timelineModelSearchText;
 
   @InitField('')
   late String hiveBoxName;
