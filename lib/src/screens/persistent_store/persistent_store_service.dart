@@ -40,12 +40,12 @@ class PersistentStoreService {
         WrenchStore.get<PersistentStore>() ?? PersistentStore();
     try {
       ProcessResult processResult = await Process.run('sh', [
-        'lib/scripts/ios_sh.sh',
+        Platform.isIOS ? 'lib/scripts/ios_sh.sh' : 'lib/scripts/android_sh.sh',
         ('${persistentStore.hiveBoxName}.hive'),
         (persistentStore.applicationPkgName)
       ]);
-      print('process result:${processResult.stdout}');
-      if (processResult.stdout != "Invalid BoxName") {
+
+      if (!([6, 5].contains(processResult.exitCode))) {
         Hive.init('lib/scripts/');
         Box box = await Hive.openBox(persistentStore.hiveBoxName);
         Map<String, String> storeData = {};
@@ -58,7 +58,9 @@ class PersistentStoreService {
         updateState1(persistentStore);
       }
     } catch (e) {
-      print('exception:$e');
+      persistentStore =
+          persistentStore.rebuild((b) => b..errorMsg = e.toString());
+      updateState1(persistentStore);
     }
   }
 }
