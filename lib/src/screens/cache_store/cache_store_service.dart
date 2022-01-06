@@ -39,8 +39,6 @@ class CacheStoreService {
         ('${cacheStore.hiveBoxName}.hive'),
         (cacheStore.applicationPkgName)
       ]);
-      print(
-          'processresult:${processResult.stdout}---${processResult.exitCode}');
       if (processResult.exitCode != 0) {
         Hive.init('lib/scripts/');
         LazyBox lazyBox = await Hive.openLazyBox(cacheStore.hiveBoxName);

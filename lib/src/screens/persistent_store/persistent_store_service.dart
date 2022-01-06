@@ -40,7 +40,7 @@ class PersistentStoreService {
         WrenchStore.get<PersistentStore>() ?? PersistentStore();
     try {
       ProcessResult processResult = await Process.run('sh', [
-        Platform.isIOS ? 'lib/scripts/ios_sh.sh' : 'lib/scripts/android_sh.sh',
+        'lib/scripts/ios_sh.sh',
         ('${persistentStore.hiveBoxName}.hive'),
         (persistentStore.applicationPkgName)
       ]);
