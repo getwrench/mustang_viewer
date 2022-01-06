@@ -35,11 +35,13 @@ class CacheStoreService {
     CacheStore cacheStore = WrenchStore.get<CacheStore>() ?? CacheStore();
     try {
       ProcessResult processResult = await Process.run('sh', [
-        Platform.isIOS ? 'lib/scripts/ios_sh.sh' : 'lib/scripts/android_sh.sh',
+        'lib/scripts/ios_sh.sh',
         ('${cacheStore.hiveBoxName}.hive'),
         (cacheStore.applicationPkgName)
       ]);
-      if (!([6, 5].contains(processResult.exitCode))) {
+      print(
+          'processresult:${processResult.stdout}---${processResult.exitCode}');
+      if (processResult.exitCode != 0) {
         Hive.init('lib/scripts/');
         LazyBox lazyBox = await Hive.openLazyBox(cacheStore.hiveBoxName);
         Map<String, Map<String, String>> storeData = {};
@@ -54,6 +56,7 @@ class CacheStoreService {
             ),
           ),
         );
+        print('--store:$storeData');
         cacheStore = cacheStore.rebuild((b) =>
             b..cacheModelData = prettyJson(jsonDecode(storeData.toString())));
         updateState1(cacheStore);

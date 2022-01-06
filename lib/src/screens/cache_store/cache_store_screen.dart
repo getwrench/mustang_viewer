@@ -57,7 +57,7 @@ class CacheStoreScreen extends StatelessWidget {
   }
 
   Widget showInputDialog(BuildContext context, CacheStoreState state) {
-    if (state.cacheStore.cacheModelData.length == 2) {
+    if (state.cacheStore.cacheModelData == '{}') {
       return AlertDialog(
         content: Column(
           children: [
@@ -84,14 +84,14 @@ class CacheStoreScreen extends StatelessWidget {
             onPressed: () {
               Navigator.pop(context);
             },
-            child: const Text('Close'),
+            child: const Text(AppConstants.close),
             hoverColor: Theme.of(context).colorScheme.primary,
           ),
           MaterialButton(
             onPressed: () {
               CacheStoreService().fetchStoreData();
             },
-            child: const Text('Fetch'),
+            child: const Text(AppConstants.fetch),
             hoverColor: Theme.of(context).colorScheme.primary,
           ),
         ],

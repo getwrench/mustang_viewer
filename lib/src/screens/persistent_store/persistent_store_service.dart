@@ -45,7 +45,7 @@ class PersistentStoreService {
         (persistentStore.applicationPkgName)
       ]);
 
-      if (!([6, 5].contains(processResult.exitCode))) {
+      if (processResult.exitCode != 0) {
         Hive.init('lib/scripts/');
         Box box = await Hive.openBox(persistentStore.hiveBoxName);
         Map<String, String> storeData = {};

@@ -58,7 +58,7 @@ class PersistentStoreScreen extends StatelessWidget {
   }
 
   Widget showInputDialog(BuildContext context, PersistentStoreState state) {
-    if (state.persistentStore.persistentModelData.length == 2) {
+    if (state.persistentStore.persistentModelData == '{}') {
       return AlertDialog(
         content: Column(
           children: [
@@ -85,14 +85,14 @@ class PersistentStoreScreen extends StatelessWidget {
             onPressed: () {
               Navigator.pop(context);
             },
-            child: const Text('Close'),
+            child: const Text(AppConstants.close),
             hoverColor: Theme.of(context).colorScheme.primary,
           ),
           MaterialButton(
             onPressed: () {
               PersistentStoreService().fetchStoreData();
             },
-            child: const Text('Fetch'),
+            child: const Text(AppConstants.fetch),
             hoverColor: Theme.of(context).colorScheme.primary,
           ),
         ],
