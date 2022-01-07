@@ -2,6 +2,8 @@ class AppConstants {
   static const String connect = 'Connect';
   static const String dataView = 'Model data';
   static const String disconnect = 'Disconnect';
+  static const String storeData = 'StoreData';
+  static const String cacheData = 'CacheData';
   static const String debugServiceUrl = 'Debug service URL';
   static const String mustangAppEvent = 'mustang';
   static const String hintServiceUrl =
@@ -16,4 +18,10 @@ class AppConstants {
   static const String found = 'Found';
   static const String diff = 'Diff';
   static const String home = 'Home';
+  static const String boxNameHintText = 'Enter HiveBoxName';
+  static const String pkgNameHintText = 'Enter Application Package Name';
+  static const String close = 'Close';
+  static const String fetch = 'Fetch';
+  static const List<String> osTypes = ['Android', 'IOS'];
+  static const String runningOnOS = 'Running On:  ';
 }

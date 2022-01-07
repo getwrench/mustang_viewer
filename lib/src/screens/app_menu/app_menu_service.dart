@@ -1,5 +1,7 @@
 import 'package:mustang_core/mustang_core.dart';
+import 'package:mustang_viewer/src/models/app_cache_store.model.dart';
 import 'package:mustang_viewer/src/models/app_menu.model.dart';
+import 'package:mustang_viewer/src/models/app_persistence_store.model.dart';
 import 'package:mustang_viewer/src/models/connect.model.dart';
 
 import 'app_menu_service.service.dart';
@@ -34,5 +36,13 @@ class AppMenuService {
 
   void clearConnectScreen() {
     updateState1(Connect(), reload: false);
+  }
+
+  void clearPersistentStoreData() {
+    updateState1(AppPersistenceStore());
+  }
+
+  void clearCacheStoreData() {
+    updateState1(AppCacheStore());
   }
 }

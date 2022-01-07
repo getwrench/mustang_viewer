@@ -72,6 +72,32 @@ class AppMenuScreen extends StatelessWidget {
                   active: state.appMenu.activeIndex == 1,
                   buttonIcon: const Icon(Icons.call_split),
                 ),
+                MenuItem(
+                  tooltipMessage: AppConstants.storeData,
+                  onPress: () {
+                    AppMenuService().updateIndex(2);
+                    AppMenuService().clearPersistentStoreData();
+                    Navigator.pushNamed(
+                      context,
+                      AppRoutes.store,
+                    );
+                  },
+                  active: state.appMenu.activeIndex == 2,
+                  buttonIcon: const Icon(Icons.storage),
+                ),
+                MenuItem(
+                  tooltipMessage: AppConstants.cacheData,
+                  onPress: () {
+                    AppMenuService().updateIndex(3);
+                    AppMenuService().clearCacheStoreData();
+                    Navigator.pushNamed(
+                      context,
+                      AppRoutes.cache,
+                    );
+                  },
+                  active: state.appMenu.activeIndex == 3,
+                  buttonIcon: const Icon(Icons.cached),
+                ),
               ],
             ),
           ),

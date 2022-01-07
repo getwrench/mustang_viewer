@@ -178,4 +178,27 @@ class MemoryService {
     );
     updateState1(memory);
   }
+
+  Future<void> disconnect() async {
+    Connect connect = WrenchStore.get<Connect>() ?? Connect();
+    try {
+      await connect.vmService!.dispose();
+      await connect.vmService!.onDone;
+      connect = connect.rebuild(
+        (b) => b
+          ..vmService = null
+          ..connected = false,
+      );
+    } catch (e) {
+      connect = connect.rebuild(
+        (b) => b..errorOnEvent = '$e',
+      );
+    } finally {
+      updateState1(connect, reload: false);
+    }
+  }
+
+  void clearConnectScreen() {
+    updateState1(Connect(), reload: false);
+  }
 }
