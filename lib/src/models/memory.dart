@@ -51,7 +51,4 @@ class $Memory {
 
   @InitField('')
   late String timelineModelSearchText;
-
-  @InitField('')
-  late String hiveBoxName;
 }

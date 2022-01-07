@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:mustang_core/mustang_widgets.dart';
-import 'package:mustang_viewer/src/models/app_event.model.dart';
 import 'package:mustang_viewer/src/screens/app_menu/app_menu_screen.dart';
-import 'package:mustang_viewer/src/screens/memory/next_search_index_action.dart';
-import 'package:mustang_viewer/src/screens/memory/previous_search_index_action.dart';
+import 'package:mustang_viewer/src/screens/shared_services/next_search_index_action.dart';
+import 'package:mustang_viewer/src/screens/shared_services/previous_search_index_action.dart';
 import 'package:mustang_viewer/src/shared_widgets/app_progress_indicator.dart';
 import 'package:mustang_viewer/src/shared_widgets/app_state.dart';
 import 'package:mustang_viewer/src/shared_widgets/app_state_timeline.dart';
@@ -74,6 +73,7 @@ class MemoryScreen extends StatelessWidget {
     ScrollController modelViewScrollController,
     TextEditingController dataViewSearchTextController,
   ) {
+    print('---${state?.memory.modelViewEvent?.modelData}');
     return Scaffold(
       body: Center(
         child: Row(
@@ -138,15 +138,17 @@ class MemoryScreen extends StatelessWidget {
                   ),
                 ),
                 child: ModelView(
-                  state.memory.modelViewEvent ?? AppEvent(),
+                  state.memory.modelViewEvent?.modelData ?? '{}',
                   state.memory.modelDataSearchText,
                   MemoryService().onChangeModelViewSearch,
                   modelViewScrollController,
                   state.memory.modelDataSearchTextIndices.toList(),
                   state.memory.selectedModelDataSearchTextIndex,
                   MemoryService().onNavigateModelViewSearchMatches,
-                  NextSearchIndexAction(),
-                  PreviousSearchIndexAction(),
+                  NextSearchIndexAction(
+                      MemoryService().onNavigateModelViewSearchMatches),
+                  PreviousSearchIndexAction(
+                      MemoryService().onNavigateModelViewSearchMatches),
                   dataViewSearchTextController,
                 ),
               ),

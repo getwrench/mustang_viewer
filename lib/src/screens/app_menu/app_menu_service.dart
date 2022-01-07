@@ -1,8 +1,8 @@
 import 'package:mustang_core/mustang_core.dart';
+import 'package:mustang_viewer/src/models/app_cache_store.model.dart';
 import 'package:mustang_viewer/src/models/app_menu.model.dart';
-import 'package:mustang_viewer/src/models/cache_store.model.dart';
+import 'package:mustang_viewer/src/models/app_persistence_store.model.dart';
 import 'package:mustang_viewer/src/models/connect.model.dart';
-import 'package:mustang_viewer/src/models/persistent_store.model.dart';
 
 import 'app_menu_service.service.dart';
 import 'app_menu_state.dart';
@@ -39,16 +39,10 @@ class AppMenuService {
   }
 
   void clearPersistentStoreData() {
-    PersistentStore persistentStore =
-        WrenchStore.get<PersistentStore>() ?? PersistentStore();
-    persistentStore =
-        persistentStore.rebuild((b) => b..persistentModelData = '{}');
-    updateState1(persistentStore);
+    updateState1(AppPersistenceStore());
   }
 
   void clearCacheStoreData() {
-    CacheStore cacheStore = WrenchStore.get<CacheStore>() ?? CacheStore();
-    cacheStore = cacheStore.rebuild((b) => b..cacheModelData = '{}');
-    updateState1(cacheStore);
+    updateState1(AppCacheStore());
   }
 }

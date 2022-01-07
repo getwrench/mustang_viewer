@@ -22,4 +22,6 @@ class AppConstants {
   static const String pkgNameHintText = 'Enter Application Package Name';
   static const String close = 'Close';
   static const String fetch = 'Fetch';
+  static const List<String> osTypes = ['Android', 'IOS'];
+  static const String runningOnOS = 'Running On:  ';
 }
