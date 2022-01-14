@@ -1,7 +1,7 @@
 import 'package:mustang_core/mustang_core.dart';
 
 @appModel
-class $AppEvent {
+abstract class $AppEvent {
   @InitField(0)
   late int timestamp;
 
