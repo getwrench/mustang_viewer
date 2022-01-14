@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:mustang_core/mustang_widgets.dart';
-import 'package:mustang_viewer/src/screens/connect/connect_service.dart';
 import 'package:mustang_viewer/src/shared_widgets/app_progress_indicator.dart';
 import 'package:mustang_viewer/src/utils/app_constants.dart';
 import 'package:mustang_viewer/src/utils/app_routes.dart';
 import 'package:mustang_viewer/src/utils/app_styles.dart';
 import 'package:mustang_viewer/src/utils/dialog_util.dart';
 
+import 'connect_service.service.dart';
 import 'connect_state.state.dart';
 
 class ConnectScreen extends StatelessWidget {

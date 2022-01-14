@@ -7,7 +7,7 @@ import 'package:mustang_viewer/src/utils/app_routes.dart';
 import 'package:mustang_viewer/src/utils/app_styles.dart';
 import 'package:mustang_viewer/src/utils/dialog_util.dart';
 
-import 'app_menu_service.dart';
+import 'app_menu_service.service.dart';
 import 'app_menu_state.state.dart';
 
 class AppMenuScreen extends StatelessWidget {

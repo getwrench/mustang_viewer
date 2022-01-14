@@ -8,7 +8,7 @@ import 'package:vm_service/vm_service_io.dart';
 import 'connect_state.dart';
 
 @ScreenService(screenState: $ConnectState)
-class ConnectService {
+abstract class $ConnectService {
   Future<void> connect(String wsUri) async {
     if (wsUri.isEmpty) return;
 

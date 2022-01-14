@@ -1,7 +1,7 @@
 import 'package:mustang_core/mustang_core.dart';
 
-@appModel 
-class $AppMenu {
+@appModel
+abstract class $AppMenu {
   @InitField(false)
   @SerializeField(false)
   late bool busy;
@@ -20,4 +20,3 @@ class $AppMenu {
   @InitField(0)
   late int activeIndex;
 }
-    

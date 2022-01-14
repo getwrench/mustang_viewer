@@ -4,7 +4,7 @@ import 'package:mustang_core/mustang_core.dart';
 import 'app_event.dart';
 
 @appModel
-class $Memory {
+abstract class $Memory {
   @InitField(false)
   @SerializeField(false)
   late bool busy;

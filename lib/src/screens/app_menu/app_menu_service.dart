@@ -6,7 +6,7 @@ import 'app_menu_service.service.dart';
 import 'app_menu_state.dart';
 
 @ScreenService(screenState: $AppMenuState)
-class AppMenuService {
+abstract class $AppMenuService {
   Future<void> disconnect() async {
     Connect connect = WrenchStore.get<Connect>() ?? Connect();
     try {

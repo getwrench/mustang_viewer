@@ -1,7 +1,7 @@
 import 'package:mustang_core/mustang_core.dart';
 
-@appModel 
-class $Diff {
+@appModel
+abstract class $Diff {
   @InitField(false)
   @SerializeField(false)
   late bool busy;
@@ -13,8 +13,7 @@ class $Diff {
   @InitField('')
   @SerializeField(false)
   late String errorMsgOnEvent;
-  
+
   @InitField(false)
   late bool clearScreenCache;
 }
-    

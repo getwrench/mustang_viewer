@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:mustang_core/mustang_widgets.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:mustang_core/mustang_widgets.dart';
 import 'package:mustang_viewer/src/screens/app_menu/app_menu_screen.dart';
 import 'package:mustang_viewer/src/shared_widgets/app_progress_indicator.dart';
 
+import 'diff_service.service.dart';
 import 'diff_state.state.dart';
-import 'diff_service.dart';
 
 class DiffScreen extends StatelessWidget {
   const DiffScreen({

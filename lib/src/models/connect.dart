@@ -2,7 +2,7 @@ import 'package:mustang_core/mustang_core.dart';
 import 'package:vm_service/vm_service.dart';
 
 @appModel
-class $Connect {
+abstract class $Connect {
   @InitField(false)
   @SerializeField(false)
   late bool busy;

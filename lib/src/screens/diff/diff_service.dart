@@ -5,7 +5,7 @@ import 'diff_service.service.dart';
 import 'diff_state.dart';
 
 @ScreenService(screenState: $DiffState)
-class DifferenceService {
+abstract class $DifferenceService {
   Future<void> memoizedGetData() {
     Diff diff = WrenchStore.get<Diff>() ?? Diff();
     if (diff.clearScreenCache) {

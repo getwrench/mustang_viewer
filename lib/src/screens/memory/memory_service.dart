@@ -10,7 +10,7 @@ import 'package:mustang_viewer/src/utils/app_text_highlighter.dart';
 import 'package:vm_service/vm_service.dart';
 
 @ScreenService(screenState: $MemoryState)
-class MemoryService {
+abstract class $MemoryService {
   static const String _appEventModelNameKey = 'modelName';
   static const String _appEventModelDataKey = 'modelStr';
 

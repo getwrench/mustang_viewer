@@ -11,7 +11,7 @@ import 'package:mustang_viewer/src/shared_widgets/app_state_timeline.dart';
 import 'package:mustang_viewer/src/shared_widgets/model_view.dart';
 import 'package:mustang_viewer/src/utils/app_styles.dart';
 
-import 'memory_service.dart';
+import 'memory_service.service.dart';
 import 'memory_state.state.dart';
 
 class MemoryScreen extends StatelessWidget {
